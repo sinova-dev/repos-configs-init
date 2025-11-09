@@ -3,6 +3,7 @@ import inquirer from 'inquirer';
 
 import { setupPrettier } from './prettier-init.mjs';
 import { setupHusky } from './husky-init.mjs';
+import { setupEslint } from './eslint-init.mjs';
 
 async function main() {
   console.log('🚀 Initializing development tools...');
@@ -18,16 +19,23 @@ async function main() {
 
   if (shouldInstallAll) {
     await setupPrettier();
+    await setupEslint();
     await setupHusky();
     console.info('✨ All done!');
     return;
   }
 
-  const { shouldSetupPrettier, shouldSetupHusky } = await inquirer.prompt([
+  const { shouldSetupPrettier, shouldSetupEslint, shouldSetupHusky } = await inquirer.prompt([
     {
       type: 'confirm',
       name: 'shouldSetupPrettier',
       message: 'Set up Prettier configuration?',
+      default: true,
+    },
+    {
+      type: 'confirm',
+      name: 'shouldSetupEslint',
+      message: 'Set up ESLint configuration?',
       default: true,
     },
     {
@@ -40,6 +48,10 @@ async function main() {
 
   if (shouldSetupPrettier) {
     await setupPrettier();
+  }
+
+  if (shouldSetupEslint) {
+    await setupEslint();
   }
 
   if (shouldSetupHusky) {

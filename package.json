@@ -4,19 +4,23 @@
   "description": "Sinova Development repos configs",
   "type": "module",
   "exports": {
-    "./prettier-config": "./prettier-config.js"
+    "./prettier-config": "./prettier-config.js",
+    "./eslint-config": "./eslint-config.js"
   },
   "license": "MIT",
   "scripts": {
     "format": "prettier . --write --log-level=warn",
     "format:check": "prettier . --check --log-level=warn",
-    "pre-commit": "pnpm install && git add pnpm-lock.yaml && pnpm lint-staged --allow-empty",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "pre-commit": "pnpm install && git add pnpm-lock.yaml && pnpm lint-staged --allow-empty && pnpm lint && tsc --noEmit",
     "prepare": "husky || true"
   },
   "bin": {
     "sinova-general-config-init": "./init.mjs",
     "sinova-husky-init": "./husky-init.mjs",
-    "sinova-prettier-init": "./prettier-init.mjs"
+    "sinova-prettier-init": "./prettier-init.mjs",
+    "sinova-eslint-init": "./eslint-init.mjs"
   },
   "dependencies": {
     "inquirer": "^9.0.0",
@@ -30,10 +34,32 @@
     "release-it": "^19.0.4"
   },
   "peerDependencies": {
+    "@eslint-community/eslint-plugin-eslint-comments": ">=4.4.0",
+    "@eslint/eslintrc": ">=3.0.0",
+    "@eslint/js": ">=9.0.0",
+    "@next/eslint-plugin-next": ">=14.0.0",
+    "eslint": ">=9.0.0",
+    "eslint-config-prettier": ">=9.0.0",
+    "eslint-import-resolver-typescript": ">=3.6.0",
+    "eslint-plugin-check-file": ">=2.0.0",
+    "eslint-plugin-erasable-syntax-only": ">=0.2.0",
+    "eslint-plugin-i18next": ">=6.0.0",
+    "eslint-plugin-import": ">=2.29.0",
+    "eslint-plugin-jsdoc": ">=46.8.0",
+    "eslint-plugin-jsx-a11y": ">=6.8.0",
+    "eslint-plugin-playwright": ">=0.18.0",
+    "eslint-plugin-react": ">=7.34.0",
+    "eslint-plugin-react-hooks": ">=5.0.0",
+    "eslint-plugin-react-refresh": ">=0.4.5",
+    "eslint-plugin-storybook": ">=0.11.0",
+    "eslint-plugin-tailwindcss": ">=3.8.0",
+    "eslint-plugin-unicorn": ">=51.0.0",
+    "globals": ">=13.0.0",
     "husky": ">=9.1.7",
     "lint-staged": ">=15.0.0",
     "prettier": ">=3.0.0",
-    "prettier-plugin-tailwindcss": ">=0.6.10"
+    "prettier-plugin-tailwindcss": ">=0.6.10",
+    "typescript-eslint": ">=8.0.0"
   },
   "publishConfig": {
     "access": "public"

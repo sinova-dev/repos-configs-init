@@ -39,7 +39,7 @@ export async function setupHusky() {
     const targetPackageJson = JSON.parse(await fs.readFile(targetPackageJsonPath, 'utf-8'));
 
     const huskyScripts = {
-      'pre-commit': 'pnpm install && git add pnpm-lock.yaml && pnpm lint-staged --allow-empty && tsc --noEmit',
+      'pre-commit': 'pnpm install && git add pnpm-lock.yaml && pnpm lint-staged --allow-empty && pnpm lint && tsc --noEmit',
     };
 
     if (!targetPackageJson.scripts) {
