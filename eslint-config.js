@@ -22,6 +22,7 @@ import playwright from 'eslint-plugin-playwright';
 import erasableSyntaxOnly from 'eslint-plugin-erasable-syntax-only';
 import jsdoc from 'eslint-plugin-jsdoc';
 
+// mimic CommonJS variables -- not needed if using CommonJS
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -41,12 +42,17 @@ export const baseConfig = defineConfig(
   comments.recommended,
   erasableSyntaxOnly.configs.recommended,
   jsxA11y.flatConfigs.strict,
+
   storybook.configs['flat/recommended'],
   tailwindcss.configs['flat/recommended'],
   i18next.configs['flat/recommended'],
   playwright.configs['flat/recommended'],
   jsdoc.configs['flat/recommended-typescript-error'],
+
+  // Convert legacy configs using FlatCompat
   ...compat.extends('plugin:@next/next/recommended'),
+
+  // Global configuration
   {
     languageOptions: {
       ecmaVersion: 'latest',
@@ -88,7 +94,9 @@ export const baseConfig = defineConfig(
       'no-console': ['warn', { allow: ['info', 'warn', 'error'] }],
       'max-params': ['error', 3],
       'no-extra-boolean-cast': 'off',
+
       curly: ['error', 'all'],
+
       'check-file/filename-naming-convention': [
         'error',
         {
@@ -105,9 +113,13 @@ export const baseConfig = defineConfig(
           '**/!(.)/': 'NEXT_JS_APP_ROUTER_CASE',
         },
       ],
+
       'no-void': 'off',
+
       'tailwindcss/classnames-order': 'off',
+
       'react-refresh/only-export-components': ['warn', { allowExportNames: ['metadata'], allowConstantExport: true }],
+
       'react/function-component-definition': [
         'warn',
         { namedComponents: 'arrow-function', unnamedComponents: 'arrow-function' },
@@ -137,7 +149,9 @@ export const baseConfig = defineConfig(
       'react/display-name': 'warn',
       'react/react-in-jsx-scope': 'off',
       'react/no-array-index-key': 'off',
+
       'react/jsx-no-useless-fragment': ['error', { allowExpressions: true }],
+
       'no-restricted-imports': [
         'error',
         {
@@ -146,6 +160,7 @@ export const baseConfig = defineConfig(
               group: ['.*'],
               message: 'Relative imports are not allowed.',
             },
+
             {
               group: ['lodash'],
               message: 'Please install only needed part from lodash.* package.',
@@ -157,6 +172,7 @@ export const baseConfig = defineConfig(
       'import/no-duplicates': ['error', { 'prefer-inline': true }],
       'import/prefer-default-export': 'off',
       'import/no-default-export': 'error',
+
       '@typescript-eslint/consistent-type-exports': 'error',
       '@typescript-eslint/method-signature-style': 'error',
       '@typescript-eslint/no-unnecessary-type-conversion': 'error',
@@ -212,6 +228,8 @@ export const baseConfig = defineConfig(
           },
         },
       ],
+
+      // Unicorn plugin rules to disable / configure
       'unicorn/expiring-todo-comments': 'off',
       'unicorn/filename-case': 'off',
       'unicorn/no-array-reduce': 'off',
@@ -226,16 +244,18 @@ export const baseConfig = defineConfig(
       'unicorn/prefer-spread': 'off',
       'unicorn/no-abusive-eslint-disable': 'off',
       'unicorn/no-anonymous-default-export': 'off',
-      'unicorn/no-null': 'off',
-      'unicorn/prevent-abbreviations': 'off',
+      'unicorn/no-null': 'off', // TODO: Enable this rule when moved to undefined instead of null
+      'unicorn/prevent-abbreviations': 'off', // TODO: Enable this rule
+      // Disabled because of ES version
       'unicorn/no-array-sort': 'off',
       'unicorn/no-array-reverse': 'off',
-      'unicorn/prefer-top-level-await': 'off',
-      'unicorn/prefer-event-target': 'off',
-      'unicorn/no-empty-file': 'off',
+
+      // JSDoc rules
       'jsdoc/tag-lines': 'off',
     },
   },
+
+  // File-specific overrides
   {
     files: ['**/*.stories.*'],
     rules: {
@@ -286,6 +306,13 @@ export const baseConfig = defineConfig(
     },
   },
   {
+    files: ['.prettierrc.mjs'],
+    rules: {
+      'import/no-default-export': 'off',
+    },
+    extends: [tseslint.configs.disableTypeChecked],
+  },
+  {
     files: ['src/components/ui/**/*.{jsx,tsx}'],
     rules: {
       'react/require-default-props': 'off',
@@ -293,6 +320,7 @@ export const baseConfig = defineConfig(
       'i18next/no-literal-string': 'off',
       'react/prop-types': 'off',
       'react/no-unknown-property': 'off',
+      'react-refresh/only-export-components': 'off',
     },
   },
   {
@@ -301,14 +329,20 @@ export const baseConfig = defineConfig(
       'react/no-is-mounted': 'off',
     },
   },
+
+  // Disable type checking for JavaScript files
   {
     files: ['**/*.js'],
     extends: [tseslint.configs.disableTypeChecked],
   },
+
+  // Put eslint-config-prettier last to override other configs
   eslintConfigPrettier,
+
   {
     ignores: [
       'global.d.ts',
+      'next-env.d.ts',
       'src/server/api/trpc.ts',
       'tailwind.config.ts',
       'playwright.config.ts',
@@ -316,45 +350,21 @@ export const baseConfig = defineConfig(
       '**/node_modules/**',
       'dist/**',
       'build/**',
+      '.next/**',
+      'out/**',
       '*.log',
+      '.env*',
+      '.git/**',
+      '.github/**',
+      '.vscode/**',
+      '.idea/**',
+      'coverage/**',
+      '.turbo/**',
+      'pnpm-lock.yaml',
+      'package-lock.json',
+      'yarn.lock',
+      '*.min.js',
+      '*.min.css',
     ],
   },
 );
-
-export const requiredPlugins = [
-  'eslint@^9.0.0',
-  '@eslint/js@^9.0.0',
-  '@eslint/eslintrc',
-  '@eslint-community/eslint-plugin-eslint-comments',
-  '@next/eslint-plugin-next',
-  'eslint-config-prettier',
-  'eslint-import-resolver-typescript',
-  'eslint-plugin-check-file',
-  'eslint-plugin-import',
-  'eslint-plugin-jsx-a11y',
-  'eslint-plugin-react',
-  'eslint-plugin-react-hooks',
-  'eslint-plugin-react-refresh',
-  'eslint-plugin-storybook',
-  'eslint-plugin-tailwindcss',
-  'eslint-plugin-i18next',
-  'eslint-plugin-unicorn',
-  'eslint-plugin-playwright',
-  'eslint-plugin-erasable-syntax-only',
-  'eslint-plugin-jsdoc',
-  'globals',
-  'typescript-eslint',
-];
-
-export default baseConfig;
-
-export function resolveConfig(externalConfig = []) {
-  const externalConfigArray = Array.isArray(externalConfig)
-    ? externalConfig
-    : externalConfig && Object.keys(externalConfig).length > 0
-      ? [externalConfig]
-      : [];
-
-  return [...baseConfig, ...externalConfigArray];
-}
-
