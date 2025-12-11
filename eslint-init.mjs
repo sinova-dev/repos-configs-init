@@ -19,9 +19,14 @@ const eslintIgnorePath = path.join(projectRoot, '.eslintignore');
 function generateConfigContent(packageName, existingConfig = null) {
   const baseConfig = `import { resolveConfig } from '${packageName}/eslint-config';
 
-export default resolveConfig([
-  // optionally add additional config objects here
-]);
+/**
+ * Defaults to the base TypeScript config.
+ * To use framework presets, import them from the same path:
+ *   import { frontendConfig, backendConfig } from '${packageName}/eslint-config';
+ *   export default resolveConfig(frontendConfig);
+ */
+
+export default resolveConfig();
 `;
 
   if (existingConfig) {

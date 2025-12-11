@@ -53,6 +53,20 @@ npx sinova-prettier-init
 - TypeScript support with `typescript-eslint` package
 - Node.js and ES2021 globals configured
 
+**Configs:**
+
+- Base TypeScript (default) via `resolveConfig()`
+- Frontend (Next.js + React) via `resolveConfig(frontendConfig)`
+- Backend (NestJS) via `resolveConfig(backendConfig)`
+
+**Example:**
+
+```javascript
+import { resolveConfig, frontendConfig } from '@sinova-development/repos-configs/eslint-config';
+
+export default resolveConfig(frontendConfig);
+```
+
 **Required packages:**
 
 - `eslint@^9`, `@eslint/js`, `@eslint/eslintrc`
