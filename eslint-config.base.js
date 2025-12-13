@@ -219,6 +219,7 @@ const requiredPlugins = [
   '@eslint/js',
   '@eslint/eslintrc',
   'typescript-eslint',
+  '@darraghor/eslint-plugin-nestjs-typed',
   'eslint-config-prettier',
   'globals',
   '@eslint-community/eslint-plugin-eslint-comments',

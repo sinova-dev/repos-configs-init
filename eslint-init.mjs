@@ -22,7 +22,7 @@ function generateConfigContent(packageName, existingConfig = null) {
 /**
  * Defaults to the base TypeScript config.
  * To use framework presets, import them from the same path:
- *   import { frontendConfig, backendConfig } from '${packageName}/eslint-config';
+ *   import { frontendConfig, backendConfig, nestjsBackendConfig, nestjsBackendNoSwaggerConfig } from '${packageName}/eslint-config';
  *   export default resolveConfig(frontendConfig);
  */
 
