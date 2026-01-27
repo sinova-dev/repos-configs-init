@@ -5,7 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import merge from 'lodash.merge';
 
-import { requiredPlugins } from './eslint-config.js';
+import { requiredPlugins } from './eslint-config.base.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

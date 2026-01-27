@@ -4,9 +4,45 @@ Configurations for Sinova Development projects.
 
 ## Installation
 
+### From npm registry
+
 ```bash
 pnpm add -D @sinova-development/repos-configs
 ```
+
+### From git branch (for testing)
+
+To install from a specific branch (e.g., `eslint` branch):
+
+**How to determine the exact URL:**
+
+1. **Get the repository URL:**
+   - Check the git remote: `git remote get-url origin`
+   - Or find it on GitHub: `https://github.com/OWNER/REPO`
+
+2. **Convert SSH to HTTPS format (if needed):**
+   - SSH: `git@github.com:owner/repo.git` 
+   - HTTPS: `https://github.com/owner/repo.git`
+
+3. **Use the format:**
+   ```
+   @package-name@git+https://github.com/owner/repo.git#branch-name
+   ```
+
+**Example for this repository:**
+
+```bash
+# Using HTTPS (recommended)
+pnpm add -D "@sinova-development/repos-configs@git+https://github.com/sinova-dev/repos-configs-init.git#eslint"
+```
+
+Or using SSH:
+
+```bash
+pnpm add -D "@sinova-development/repos-configs@git+ssh://git@github.com/sinova-dev/repos-configs-init.git#eslint"
+```
+
+**Note:** Use quotes around the package spec to prevent shell interpretation of special characters like `#`.
 
 ## Quick Setup
 
@@ -57,14 +93,31 @@ npx sinova-prettier-init
 
 - Base TypeScript (default) via `resolveConfig()`
 - Frontend (Next.js + React) via `resolveConfig(frontendConfig)`
-- Backend (NestJS) via `resolveConfig(backendConfig)`
+- Backend (Node.js) via `resolveConfig(backendConfig)`
+- Backend (NestJS) via `resolveConfig(nestjsBackendConfig)`
+- Backend (NestJS without Swagger) via `resolveConfig(nestjsBackendNoSwaggerConfig)`
 
-**Example:**
+**Examples:**
 
+Frontend:
 ```javascript
 import { resolveConfig, frontendConfig } from '@sinova-development/repos-configs/eslint-config';
 
 export default resolveConfig(frontendConfig);
+```
+
+Backend (basic Node.js):
+```javascript
+import { resolveConfig, backendConfig } from '@sinova-development/repos-configs/eslint-config';
+
+export default resolveConfig(backendConfig);
+```
+
+Backend (NestJS):
+```javascript
+import { resolveConfig, nestjsBackendConfig } from '@sinova-development/repos-configs/eslint-config';
+
+export default resolveConfig(nestjsBackendConfig);
 ```
 
 **Required packages:**
@@ -82,6 +135,36 @@ export default resolveConfig(frontendConfig);
 ```bash
 npx sinova-eslint-init
 ```
+
+**Setting up Backend Config:**
+
+After installing the package and running the init script, update your `eslint.config.mjs` file:
+
+1. **For basic Node.js backend:**
+   ```javascript
+   import { resolveConfig, backendConfig } from '@sinova-development/repos-configs/eslint-config';
+   
+   export default resolveConfig(backendConfig);
+   ```
+
+2. **For NestJS backend (with Swagger):**
+   ```javascript
+   import { resolveConfig, nestjsBackendConfig } from '@sinova-development/repos-configs/eslint-config';
+   
+   export default resolveConfig(nestjsBackendConfig);
+   ```
+
+3. **For NestJS backend (without Swagger):**
+   ```javascript
+   import { resolveConfig, nestjsBackendNoSwaggerConfig } from '@sinova-development/repos-configs/eslint-config';
+   
+   export default resolveConfig(nestjsBackendNoSwaggerConfig);
+   ```
+
+**What each config includes:**
+- `backendConfig`: Basic Node.js backend with ES2020 globals
+- `nestjsBackendConfig`: NestJS-specific rules with Swagger support, increased `max-params` limit (8), Jest globals for test files
+- `nestjsBackendNoSwaggerConfig`: Same as `nestjsBackendConfig` but without Swagger-related rules
 
 ### Husky Configuration
 
