@@ -99,9 +99,9 @@ npx sinova-prettier-init
 
 **Examples:**
 
-Frontend:
+Frontend (Next.js + React; use the `eslint-config-frontend` entry so backend-only projects don’t load Next.js):
 ```javascript
-import { resolveConfig, frontendConfig } from '@sinova-development/repos-configs/eslint-config';
+import { resolveConfig, frontendConfig } from '@sinova-development/repos-configs/eslint-config-frontend';
 
 export default resolveConfig(frontendConfig);
 ```

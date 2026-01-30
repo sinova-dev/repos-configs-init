@@ -160,3 +160,4 @@ const frontendConfigs = [
 const frontendConfig = defineConfig(...baseConfigs, ...frontendConfigs, sharedIgnores, eslintConfigPrettier);
 
 export { frontendConfigs, frontendConfig };
+export { resolveConfig } from './eslint-config.js';
