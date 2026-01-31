@@ -10,7 +10,8 @@ import reactPlugin from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import storybook from 'eslint-plugin-storybook';
-import tailwindcss from 'eslint-plugin-tailwindcss';
+// TODO: Uncomment when eslint-plugin-tailwindcss adds Tailwind v4 support, or replace with an alternative (e.g. eslint-plugin-tailwind-v4).
+// import tailwindcss from 'eslint-plugin-tailwindcss';
 import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import eslintConfigPrettier from 'eslint-config-prettier';
@@ -31,7 +32,8 @@ const frontendConfigs = [
   reactPlugin.configs.flat.recommended,
   jsxA11y.flatConfigs.strict,
   storybook.configs['flat/recommended'],
-  tailwindcss.configs['flat/recommended'],
+  // TODO: Uncomment when eslint-plugin-tailwindcss adds Tailwind v4 support, or use an alternative (e.g. eslint-plugin-tailwind-v4).
+  // tailwindcss.configs['flat/recommended'],
   i18next.configs['flat/recommended'],
   playwright.configs['flat/recommended'],
   {
@@ -46,7 +48,8 @@ const frontendConfigs = [
     settings: {
       ...baseSettings,
       react: { version: 'detect' },
-      tailwindcss: { callees: ['cn'] },
+      // TODO: Uncomment when tailwindcss plugin is re-enabled (Tailwind v4 support or alternative).
+      // tailwindcss: { callees: ['cn'] },
     },
     plugins: {
       'react-hooks': reactHooks,
@@ -58,7 +61,8 @@ const frontendConfigs = [
           '**/!(.)/': 'NEXT_JS_APP_ROUTER_CASE',
         },
       ],
-      'tailwindcss/classnames-order': 'off',
+      // TODO: Uncomment when tailwindcss plugin is re-enabled (Tailwind v4 support or alternative).
+      // 'tailwindcss/classnames-order': 'off',
       'react-refresh/only-export-components': [
         'warn',
         { allowExportNames: ['metadata'], allowConstantExport: true },
