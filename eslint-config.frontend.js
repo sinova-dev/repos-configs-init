@@ -1,8 +1,3 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-import { FlatCompat } from '@eslint/eslintrc';
-import js from '@eslint/js';
 import i18next from 'eslint-plugin-i18next';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import playwright from 'eslint-plugin-playwright';
@@ -12,22 +7,15 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import storybook from 'eslint-plugin-storybook';
 // TODO: Uncomment when eslint-plugin-tailwindcss adds Tailwind v4 support, or replace with an alternative (e.g. eslint-plugin-tailwind-v4).
 // import tailwindcss from 'eslint-plugin-tailwindcss';
+import nextPlugin from '@next/eslint-plugin-next';
 import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import eslintConfigPrettier from 'eslint-config-prettier';
 
 import { baseConfigs, baseLanguageOptions, baseSettings, sharedIgnores } from './eslint-config.base.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-});
-
 const frontendConfigs = [
-  ...compat.extends('plugin:@next/next/recommended'),
+  nextPlugin.configs.recommended,
   reactRefresh.configs.recommended,
   reactPlugin.configs.flat.recommended,
   jsxA11y.flatConfigs.strict,
