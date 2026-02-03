@@ -4,7 +4,8 @@
   "description": "Sinova Development repos configs",
   "type": "module",
   "exports": {
-    "./prettier-config": "./prettier-config.js"
+    "./prettier-config": "./prettier-config.js",
+    "./eslint-config": "./eslint-config.mjs"
   },
   "license": "MIT",
   "scripts": {
@@ -15,6 +16,7 @@
   },
   "bin": {
     "sinova-general-config-init": "./init.mjs",
+    "sinova-eslint-init": "./eslint-init.mjs",
     "sinova-husky-init": "./husky-init.mjs",
     "sinova-prettier-init": "./prettier-init.mjs"
   },
