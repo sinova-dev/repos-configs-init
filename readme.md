@@ -43,17 +43,13 @@ npx sinova-prettier-init
 
 ### ESLint Configuration
 
-Flat config for Next.js, React, TypeScript, Storybook, Playwright, and more.
+Flat configs for frontend (Next.js/React) and backend (NestJS) projects.
 
 **Includes:**
 
-- TypeScript (strict + stylistic)
-- React, React Hooks, React Refresh
-- Next.js
-- Tailwind CSS
-- Storybook, Playwright
-- i18next, Unicorn, JSDoc, check-file
-- Import rules, naming conventions
+- Shared core rules (TypeScript strict + stylistic, imports, Unicorn, JSDoc, etc.)
+- Frontend preset: Next.js, React, Tailwind CSS, Storybook, Playwright, i18next, check-file, JSX a11y
+- Backend preset: NestJS typed rules (`@darraghor/eslint-plugin-nestjs-typed`)
 
 **Install ESLint only:**
 
@@ -61,17 +57,40 @@ Flat config for Next.js, React, TypeScript, Storybook, Playwright, and more.
 npx sinova-eslint-init
 ```
 
-**Use config directly:**
+**Install ESLint only (choose preset):**
+
+```bash
+npx sinova-eslint-init --frontend
+```
+
+```bash
+npx sinova-eslint-init --backend
+```
+
+**Use config directly (frontend):**
 
 ```javascript
 // eslint.config.js
-import { createConfig } from '@sinova-development/repos-configs/eslint-config';
+import { createFrontendConfig } from '@sinova-development/repos-configs/eslint-config/frontend';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export default createConfig(__dirname);
+export default createFrontendConfig(__dirname);
+```
+
+**Use config directly (backend / NestJS):**
+
+```javascript
+// eslint.config.js
+import { createBackendConfig } from '@sinova-development/repos-configs/eslint-config/backend';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export default createBackendConfig(__dirname);
 ```
 
 ### Husky Configuration

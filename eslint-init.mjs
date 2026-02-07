@@ -4,6 +4,7 @@ import { execSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import merge from 'lodash.merge';
+import inquirer from 'inquirer';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -13,20 +14,26 @@ const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
 const projectRoot = process.cwd();
 const eslintConfigPath = path.join(projectRoot, 'eslint.config.js');
 
-const requiredEslintPackages = [
+const coreEslintPackages = [
   packageJson.name,
   '@eslint/eslintrc',
   '@eslint-community/eslint-plugin-eslint-comments',
   '@eslint/js',
-  '@next/eslint-plugin-next',
   'eslint',
   'eslint-config-prettier',
   'eslint-import-resolver-typescript',
-  'eslint-plugin-check-file',
   'eslint-plugin-erasable-syntax-only',
-  'eslint-plugin-i18next',
   'eslint-plugin-import',
   'eslint-plugin-jsdoc',
+  'eslint-plugin-unicorn',
+  'globals',
+  'typescript-eslint',
+];
+
+const frontendOnlyEslintPackages = [
+  '@next/eslint-plugin-next',
+  'eslint-plugin-check-file',
+  'eslint-plugin-i18next',
   'eslint-plugin-jsx-a11y',
   'eslint-plugin-playwright',
   'eslint-plugin-react',
@@ -34,19 +41,28 @@ const requiredEslintPackages = [
   'eslint-plugin-react-refresh',
   'eslint-plugin-storybook',
   'eslint-plugin-tailwindcss',
-  'eslint-plugin-unicorn',
-  'globals',
-  'typescript-eslint',
 ];
 
-function generateConfigContent(packageName, existingConfig = null) {
-  const baseConfig = `import { createConfig } from '${packageName}/eslint-config';
+const backendOnlyEslintPackages = ['@darraghor/eslint-plugin-nestjs-typed'];
+
+function generateConfigContent({ packageName, preset, existingConfig = null }) {
+  const importLine =
+    preset === 'backend'
+      ? `import { createBackendConfig } from '${packageName}/eslint-config/backend';`
+      : `import { createFrontendConfig } from '${packageName}/eslint-config/frontend';`;
+
+  const exportLine =
+    preset === 'backend'
+      ? `export default createBackendConfig(__dirname);`
+      : `export default createFrontendConfig(__dirname);`;
+
+  const baseConfig = `${importLine}
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export default createConfig(__dirname);
+${exportLine}
 `;
 
   if (existingConfig) {
@@ -70,6 +86,34 @@ function handleError(message, err) {
 export async function setupEslint() {
   console.log(`\n📐 Setting up ESLint with ${packageJson.name} config...`);
 
+  const args = new Set(process.argv.slice(2));
+  let preset;
+
+  if (args.has('--backend')) {
+    preset = 'backend';
+  } else if (args.has('--frontend')) {
+    preset = 'frontend';
+  } else {
+    const response = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'preset',
+        message: 'Which ESLint preset do you want to set up?',
+        default: 'frontend',
+        choices: [
+          { name: 'Frontend (Next.js / React)', value: 'frontend' },
+          { name: 'Backend (NestJS)', value: 'backend' },
+        ],
+      },
+    ]);
+    preset = response.preset;
+  }
+
+  const requiredEslintPackages =
+    preset === 'backend'
+      ? [...coreEslintPackages, ...backendOnlyEslintPackages]
+      : [...coreEslintPackages, ...frontendOnlyEslintPackages];
+
   try {
     const installCmd = `pnpm add -D ${requiredEslintPackages.join(' ')}`;
     console.log(`📦 Running: ${installCmd}`);
@@ -80,12 +124,12 @@ export async function setupEslint() {
 
   try {
     const existingConfig = await fs.readFile(eslintConfigPath, 'utf-8');
-    const configContent = generateConfigContent(packageJson.name, existingConfig);
+    const configContent = generateConfigContent({ packageName: packageJson.name, preset, existingConfig });
     await fs.writeFile(eslintConfigPath, configContent);
     console.info('✅ eslint.config.js updated with new config (previous config commented out).');
   } catch (err) {
     if (err.code === 'ENOENT') {
-      const configContent = generateConfigContent(packageJson.name);
+      const configContent = generateConfigContent({ packageName: packageJson.name, preset });
       await fs.writeFile(eslintConfigPath, configContent);
       console.info('✅ eslint.config.js created.');
     } else {

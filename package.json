@@ -5,7 +5,10 @@
   "type": "module",
   "exports": {
     "./prettier-config": "./prettier-config.js",
-    "./eslint-config": "./eslint-config.mjs"
+    "./eslint-config": "./eslint-config.frontend.mjs",
+    "./eslint-config/core": "./eslint-config.core.mjs",
+    "./eslint-config/frontend": "./eslint-config.frontend.mjs",
+    "./eslint-config/backend": "./eslint-config.backend-nestjs.mjs"
   },
   "license": "MIT",
   "scripts": {
