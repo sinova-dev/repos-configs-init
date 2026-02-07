@@ -64,13 +64,15 @@ npx sinova-eslint-init
 **Use config directly:**
 
 ```javascript
-// eslint.config.mjs
+// eslint.config.js
 import { createConfig } from '@sinova-development/repos-configs/eslint-config';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-export default createConfig(import.meta.dirname);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export default createConfig(__dirname);
 ```
-
-> **Note:** Requires Node.js 20.11+ for `import.meta.dirname`. For older Node, use `path.dirname(fileURLToPath(import.meta.url))` and pass it to `createConfig()`.
 
 ### Husky Configuration
 

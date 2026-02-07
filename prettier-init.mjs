@@ -110,3 +110,12 @@ pnpm-lock.yaml
     }
   }
 }
+
+// Run when executed directly (e.g. node prettier-init.mjs or via bin)
+const __filename = fileURLToPath(import.meta.url);
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(__filename)) {
+  setupPrettier().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}

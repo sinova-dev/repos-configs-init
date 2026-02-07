@@ -11,7 +11,7 @@ const packageJsonPath = path.join(__dirname, 'package.json');
 const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
 
 const projectRoot = process.cwd();
-const eslintConfigPath = path.join(projectRoot, 'eslint.config.mjs');
+const eslintConfigPath = path.join(projectRoot, 'eslint.config.js');
 
 const requiredEslintPackages = [
   packageJson.name,
@@ -41,8 +41,12 @@ const requiredEslintPackages = [
 
 function generateConfigContent(packageName, existingConfig = null) {
   const baseConfig = `import { createConfig } from '${packageName}/eslint-config';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-export default createConfig(import.meta.dirname);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export default createConfig(__dirname);
 `;
 
   if (existingConfig) {
@@ -78,12 +82,12 @@ export async function setupEslint() {
     const existingConfig = await fs.readFile(eslintConfigPath, 'utf-8');
     const configContent = generateConfigContent(packageJson.name, existingConfig);
     await fs.writeFile(eslintConfigPath, configContent);
-    console.info('✅ eslint.config.mjs updated with new config (previous config commented out).');
+    console.info('✅ eslint.config.js updated with new config (previous config commented out).');
   } catch (err) {
     if (err.code === 'ENOENT') {
       const configContent = generateConfigContent(packageJson.name);
       await fs.writeFile(eslintConfigPath, configContent);
-      console.info('✅ eslint.config.mjs created.');
+      console.info('✅ eslint.config.js created.');
     } else {
       handleError('Error handling config file', err);
     }
@@ -118,4 +122,13 @@ export async function setupEslint() {
   } catch (err) {
     handleError('Error updating package.json scripts', err);
   }
+}
+
+// Run when executed directly (e.g. node eslint-init.mjs or via bin)
+const __filename = fileURLToPath(import.meta.url);
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(__filename)) {
+  setupEslint().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
 }

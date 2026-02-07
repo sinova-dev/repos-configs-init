@@ -2,6 +2,7 @@
 import fs from 'fs/promises';
 import { execSync } from 'child_process';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import merge from 'lodash.merge';
 
 const baseConfig = {
@@ -59,4 +60,13 @@ export async function setupHusky() {
   } catch (err) {
     handleError('Error setting up Husky', err);
   }
+}
+
+// Run when executed directly (e.g. node husky-init.mjs or via bin)
+const __filename = fileURLToPath(import.meta.url);
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(__filename)) {
+  setupHusky().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
 }
