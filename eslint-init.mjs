@@ -51,16 +51,22 @@ function generateConfigContent({ packageName, preset, existingConfig = null }) {
       ? `import { createBackendConfig } from '${packageName}/eslint-config/backend';`
       : `import { createFrontendConfig } from '${packageName}/eslint-config/frontend';`;
 
-  const exportLine =
+  const baseConfigLine =
     preset === 'backend'
-      ? `export default createBackendConfig(__dirname);`
-      : `export default createFrontendConfig(__dirname);`;
+      ? 'const baseConfig = createBackendConfig(__dirname);'
+      : 'const baseConfig = createFrontendConfig(__dirname);';
+
+  const exportLine = `export default [
+  ...baseConfig
+];`;
 
   const baseConfig = `${importLine}
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+${baseConfigLine}
 
 ${exportLine}
 `;

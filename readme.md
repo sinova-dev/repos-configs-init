@@ -77,7 +77,9 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export default createFrontendConfig(__dirname);
+const baseConfig = createFrontendConfig(__dirname);
+
+export default [...baseConfig];
 ```
 
 **Use config directly (backend / NestJS):**
@@ -90,7 +92,9 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export default createBackendConfig(__dirname);
+const baseConfig = createBackendConfig(__dirname);
+
+export default [...baseConfig];
 ```
 
 ### Husky Configuration
