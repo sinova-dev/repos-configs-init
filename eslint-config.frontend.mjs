@@ -1,13 +1,9 @@
 import path from 'node:path';
 
 import { FlatCompat } from '@eslint/eslintrc';
-import comments from '@eslint-community/eslint-plugin-eslint-comments/configs';
 import js from '@eslint/js';
 import checkFile from 'eslint-plugin-check-file';
-import erasableSyntaxOnly from 'eslint-plugin-erasable-syntax-only';
 import i18next from 'eslint-plugin-i18next';
-import importPlugin from 'eslint-plugin-import';
-import jsdoc from 'eslint-plugin-jsdoc';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import playwright from 'eslint-plugin-playwright';
 import reactPlugin from 'eslint-plugin-react';
@@ -15,12 +11,10 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import storybook from 'eslint-plugin-storybook';
 import tailwindcss from 'eslint-plugin-tailwindcss';
-import eslintPluginUnicorn from 'eslint-plugin-unicorn';
-import eslintConfigPrettier from 'eslint-config-prettier';
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
-import { coreIgnores, createCoreConfig } from './eslint-config.core.mjs';
+import { createCoreFinalConfig, createCoreRecommendedConfigs, createCoreRulesConfig } from './eslint-config.core.mjs';
 
 const frontendIgnores = [
   'global.d.ts',
@@ -48,27 +42,21 @@ export function createFrontendConfig(configDir) {
   });
 
   return defineConfig(
-    js.configs.recommended,
-    tseslint.configs.strictTypeChecked,
-    tseslint.configs.stylisticTypeChecked,
-    eslintPluginUnicorn.configs.recommended,
+    ...createCoreRecommendedConfigs(),
+
     reactRefresh.configs.recommended,
     reactPlugin.configs.flat.recommended,
-    importPlugin.flatConfigs.recommended,
-    comments.recommended,
-    erasableSyntaxOnly.configs.recommended,
     jsxA11y.flatConfigs.strict,
 
     storybook.configs['flat/recommended'],
     tailwindcss.configs['flat/recommended'],
     i18next.configs['flat/recommended'],
     playwright.configs['flat/recommended'],
-    jsdoc.configs['flat/recommended-typescript-error'],
 
     // Convert legacy configs using FlatCompat
     ...compat.extends('plugin:@next/next/recommended'),
 
-    ...createCoreConfig(configDir, {
+    ...createCoreRulesConfig(configDir, {
       includeBrowserGlobals: true,
       enableJsx: true,
       settings: {
@@ -228,11 +216,6 @@ export function createFrontendConfig(configDir) {
       extends: [tseslint.configs.disableTypeChecked],
     },
 
-    // Put eslint-config-prettier last to override other configs
-    eslintConfigPrettier,
-
-    {
-      ignores: [...coreIgnores, ...frontendIgnores],
-    },
+    ...createCoreFinalConfig({ extraIgnores: frontendIgnores }),
   );
 }

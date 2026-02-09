@@ -1,7 +1,18 @@
 import path from 'node:path';
 
+import comments from '@eslint-community/eslint-plugin-eslint-comments/configs';
+import js from '@eslint/js';
+import erasableSyntaxOnly from 'eslint-plugin-erasable-syntax-only';
+import importPlugin from 'eslint-plugin-import';
+import jsdoc from 'eslint-plugin-jsdoc';
+import eslintConfigPrettier from 'eslint-config-prettier';
+import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+
+function toArray(configOrConfigs) {
+  return Array.isArray(configOrConfigs) ? configOrConfigs : [configOrConfigs];
+}
 
 export const coreIgnores = [
   '**/node_modules/**',
@@ -23,7 +34,26 @@ export const coreIgnores = [
 ];
 
 /**
- * Creates shared ESLint flat config parts for both frontend and backend projects.
+ * Creates the shared "recommended preset stack" for both frontend and backend projects.
+ * This keeps the shared ordering in one place.
+ *
+ * @returns {import('eslint').Linter.Config[]}
+ */
+export function createCoreRecommendedConfigs() {
+  return [
+    ...toArray(js.configs.recommended),
+    ...toArray(tseslint.configs.strictTypeChecked),
+    ...toArray(tseslint.configs.stylisticTypeChecked),
+    ...toArray(eslintPluginUnicorn.configs.recommended),
+    ...toArray(importPlugin.flatConfigs.recommended),
+    ...toArray(comments.recommended),
+    ...toArray(erasableSyntaxOnly.configs.recommended),
+    ...toArray(jsdoc.configs['flat/recommended-typescript-error']),
+  ];
+}
+
+/**
+ * Creates shared ESLint flat config rules/settings for both frontend and backend projects.
  *
  * @param {string} configDir - The directory of the config file (project root)
  * @param {object} [options]
@@ -35,7 +65,7 @@ export const coreIgnores = [
  * @param {import('eslint').Linter.Config['rules']} [options.rules]
  * @returns {import('eslint').Linter.Config[]}
  */
-export function createCoreConfig(configDir, options = {}) {
+export function createCoreRulesConfig(configDir, options = {}) {
   const rootDir = path.resolve(configDir);
   const {
     extraGlobals = {},
@@ -201,6 +231,27 @@ export function createCoreConfig(configDir, options = {}) {
 
         ...extraRules,
       },
+    },
+  ];
+}
+
+/**
+ * Creates the shared config tail that should come last:
+ * - Prettier overrides (disable formatting rules)
+ * - Ignore patterns
+ *
+ * @param {object} [options]
+ * @param {string[]} [options.extraIgnores]
+ * @returns {import('eslint').Linter.Config[]}
+ */
+export function createCoreFinalConfig(options = {}) {
+  const { extraIgnores = [] } = options;
+
+  return [
+    // Put eslint-config-prettier last to override other configs
+    eslintConfigPrettier,
+    {
+      ignores: [...coreIgnores, ...extraIgnores],
     },
   ];
 }
