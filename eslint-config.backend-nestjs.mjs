@@ -16,7 +16,6 @@ export function createBackendConfig(configDir) {
   return defineConfig(
     ...createCoreRecommendedConfigs(),
 
-    // NestJS typed ruleset (flat config)
     eslintNestJs.configs.flatRecommended,
 
     ...createCoreRulesConfig(configDir),
