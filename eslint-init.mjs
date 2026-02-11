@@ -124,8 +124,14 @@ export async function setupEslint() {
       ? [...coreEslintPackages, ...backendOnlyEslintPackages]
       : [...coreEslintPackages, ...frontendOnlyEslintPackages];
 
+  const peerDeps = packageJson.peerDependencies ?? {};
+  const packagesWithVersions = requiredEslintPackages.map((pkg) => {
+    const version = peerDeps[pkg];
+    return version ? `${pkg}@${version}` : pkg;
+  });
+
   try {
-    const installCmd = `pnpm add -D ${requiredEslintPackages.join(' ')}`;
+    const installCmd = `pnpm add -D ${packagesWithVersions.join(' ')}`;
     console.log(`📦 Running: ${installCmd}`);
     execSync(installCmd, { stdio: 'inherit' });
   } catch (err) {
