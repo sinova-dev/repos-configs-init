@@ -12,7 +12,11 @@ const packageJsonPath = path.join(__dirname, 'package.json');
 const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
 
 const projectRoot = process.cwd();
-const eslintConfigPath = path.join(projectRoot, 'eslint.config.js');
+
+function getEslintConfigPath(preset) {
+  const filename = preset === 'backend' ? 'eslint.config.mjs' : 'eslint.config.js';
+  return path.join(projectRoot, filename);
+}
 
 const coreEslintPackages = [
   packageJson.name,
@@ -128,16 +132,19 @@ export async function setupEslint() {
     handleError('Failed to install ESLint packages', err);
   }
 
+  const eslintConfigPath = getEslintConfigPath(preset);
+  const configFilename = path.basename(eslintConfigPath);
+
   try {
     const existingConfig = await fs.readFile(eslintConfigPath, 'utf-8');
     const configContent = generateConfigContent({ packageName: packageJson.name, preset, existingConfig });
     await fs.writeFile(eslintConfigPath, configContent);
-    console.info('✅ eslint.config.js updated with new config (previous config commented out).');
+    console.info(`✅ ${configFilename} updated with new config (previous config commented out).`);
   } catch (err) {
     if (err.code === 'ENOENT') {
       const configContent = generateConfigContent({ packageName: packageJson.name, preset });
       await fs.writeFile(eslintConfigPath, configContent);
-      console.info('✅ eslint.config.js created.');
+      console.info(`✅ ${configFilename} created.`);
     } else {
       handleError('Error handling config file', err);
     }
