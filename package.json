@@ -35,7 +35,7 @@
     "release-it": "^19.0.4"
   },
   "peerDependencies": {
-    "@darraghor/eslint-plugin-nestjs-typed": "^1.0.0",
+    "@darraghor/eslint-plugin-nestjs-typed": "^7.1.21",
     "@eslint/eslintrc": "^3.3.1",
     "@eslint-community/eslint-plugin-eslint-comments": "^4.5.0",
     "@eslint/js": "^9.35.0",
