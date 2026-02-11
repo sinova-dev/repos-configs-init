@@ -175,17 +175,7 @@ export function createCoreRulesConfig(configDir, options = {}) {
             selector: 'variable',
             types: ['boolean'],
             format: ['PascalCase'],
-            prefix: ['is', 'should', 'has', 'can', 'was', 'did', 'will', 'use', 'with'],
-          },
-          {
-            selector: 'typeAlias',
-            format: ['PascalCase'],
-            prefix: ['T'],
-          },
-          {
-            selector: 'interface',
-            format: ['PascalCase'],
-            prefix: ['I'],
+            prefix: ['is', 'should', 'has', 'can', 'are', 'needs', 'was', 'did', 'will', 'use', 'with'],
           },
         ],
         '@typescript-eslint/consistent-type-imports': [
