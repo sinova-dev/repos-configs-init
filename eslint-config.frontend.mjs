@@ -10,7 +10,8 @@ import reactPlugin from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import storybook from 'eslint-plugin-storybook';
-import tailwindcss from 'eslint-plugin-tailwindcss';
+// eslint-plugin-tailwindcss does not support Tailwind CSS v4. TODO: Re-enable when the plugin adds v4 support.
+// import tailwindcss from 'eslint-plugin-tailwindcss';
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
@@ -49,7 +50,7 @@ export function createFrontendConfig(configDir) {
     jsxA11y.flatConfigs.strict,
 
     storybook.configs['flat/recommended'],
-    tailwindcss.configs['flat/recommended'],
+    // tailwindcss.configs['flat/recommended'],
     i18next.configs['flat/recommended'],
     playwright.configs['flat/recommended'],
 
@@ -63,9 +64,7 @@ export function createFrontendConfig(configDir) {
         react: {
           version: 'detect',
         },
-        tailwindcss: {
-          callees: ['cn'],
-        },
+        // tailwindcss: { callees: ['cn'] },
       },
       plugins: {
         'check-file': checkFile,
@@ -89,7 +88,7 @@ export function createFrontendConfig(configDir) {
           },
         ],
 
-        'tailwindcss/classnames-order': 'off',
+        // 'tailwindcss/classnames-order': 'off',
 
         'react-refresh/only-export-components': ['warn', { allowExportNames: ['metadata'], allowConstantExport: true }],
 

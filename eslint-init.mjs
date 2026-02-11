@@ -44,7 +44,8 @@ const frontendOnlyEslintPackages = [
   'eslint-plugin-react-hooks',
   'eslint-plugin-react-refresh',
   'eslint-plugin-storybook',
-  'eslint-plugin-tailwindcss',
+  // TODO: Re-enable when eslint-plugin-tailwindcss supports Tailwind CSS v4 (currently only supports v3).
+  // 'eslint-plugin-tailwindcss',
 ];
 
 const backendOnlyEslintPackages = ['@darraghor/eslint-plugin-nestjs-typed'];

@@ -48,7 +48,7 @@ Flat configs for frontend (Next.js/React) and backend (NestJS) projects.
 **Includes:**
 
 - Shared core rules (TypeScript strict + stylistic, imports, Unicorn, JSDoc, etc.)
-- Frontend preset: Next.js, React, Tailwind CSS, Storybook, Playwright, i18next, check-file, JSX a11y
+- Frontend preset: Next.js, React, Storybook, Playwright, i18next, check-file, JSX a11y (_eslint-plugin-tailwindcss disabled: TODO re-enable when it supports Tailwind CSS v4_)
 - Backend preset: NestJS typed rules (`@darraghor/eslint-plugin-nestjs-typed`)
 
 **Install ESLint only:**
