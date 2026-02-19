@@ -71,13 +71,13 @@ npx sinova-eslint-init --backend
 
 ```javascript
 // eslint.config.js
-import { createFrontendConfig } from '@sinova-development/repos-configs/eslint-config/frontend';
+import { createConfig } from '@sinova-development/repos-configs/eslint-config/frontend';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const baseConfig = createFrontendConfig(__dirname);
+const baseConfig = createConfig(__dirname);
 
 export default [...baseConfig];
 ```
@@ -86,13 +86,13 @@ export default [...baseConfig];
 
 ```javascript
 // eslint.config.js
-import { createBackendConfig } from '@sinova-development/repos-configs/eslint-config/backend';
+import { createConfig } from '@sinova-development/repos-configs/eslint-config/backend';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const baseConfig = createBackendConfig(__dirname);
+const baseConfig = createConfig(__dirname);
 
 export default [...baseConfig];
 ```

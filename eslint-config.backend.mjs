@@ -12,7 +12,7 @@ const backendIgnores = [];
  * @param {string} configDir - The directory of the config file (project root)
  * @returns {import('eslint').Linter.Config[]}
  */
-export const createBackendConfig = (configDir) => {
+export const createConfig = (configDir) => {
   return defineConfig(
     ...createCoreRecommendedConfigs(),
 

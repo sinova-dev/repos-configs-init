@@ -53,13 +53,13 @@ const backendOnlyEslintPackages = ['@darraghor/eslint-plugin-nestjs-typed'];
 function generateConfigContent({ packageName, preset, existingConfig = null }) {
   const importLine =
     preset === 'backend'
-      ? `import { createBackendConfig } from '${packageName}/eslint-config/backend';`
-      : `import { createFrontendConfig } from '${packageName}/eslint-config/frontend';`;
+      ? `import { createConfig } from '${packageName}/eslint-config/backend';`
+      : `import { createConfig } from '${packageName}/eslint-config/frontend';`;
 
   const baseConfigLine =
     preset === 'backend'
-      ? 'const baseConfig = createBackendConfig(__dirname);'
-      : 'const baseConfig = createFrontendConfig(__dirname);';
+      ? 'const baseConfig = createConfig(__dirname);'
+      : 'const baseConfig = createConfig(__dirname);';
 
   const exportLine = `export default [
   ...baseConfig

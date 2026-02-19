@@ -15,7 +15,7 @@ import storybook from 'eslint-plugin-storybook';
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
-import { createCoreFinalConfig, createCoreRecommendedConfigs, createCoreRulesConfig } from './eslint-config.core.mjs';
+import { createCoreRecommendedConfigs, createCoreRulesConfig, createTailConfigs } from './eslint-config.core.mjs';
 
 const frontendIgnores = [
   'global.d.ts',
@@ -29,13 +29,13 @@ const frontendIgnores = [
 ];
 
 /**
- * Creates the ESLint flat config for frontend (Next.js/React) projects.
+ * Creates the ESLint flat config for frontend projects.
  * Pass the directory containing eslint.config.js (typically import.meta.dirname).
  *
  * @param {string} configDir - The directory of the config file (project root)
  * @returns {import('eslint').Linter.Config[]}
  */
-export function createFrontendConfig(configDir) {
+export const createConfig = (configDir) => {
   const rootDir = path.resolve(configDir);
   const compat = new FlatCompat({
     baseDirectory: rootDir,
@@ -215,6 +215,6 @@ export function createFrontendConfig(configDir) {
       extends: [tseslint.configs.disableTypeChecked],
     },
 
-    ...createCoreFinalConfig({ extraIgnores: frontendIgnores }),
+    ...createTailConfigs({ extraIgnores: frontendIgnores }),
   );
-}
+};
