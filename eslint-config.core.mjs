@@ -234,7 +234,7 @@ export function createCoreRulesConfig(configDir, options = {}) {
  * @param {string[]} [options.extraIgnores]
  * @returns {import('eslint').Linter.Config[]}
  */
-export function createCoreFinalConfig(options = {}) {
+export const createTailConfigs = (options = {}) => {
   const { extraIgnores = [] } = options;
 
   return [
@@ -244,4 +244,4 @@ export function createCoreFinalConfig(options = {}) {
       ignores: [...coreIgnores, ...extraIgnores],
     },
   ];
-}
+};

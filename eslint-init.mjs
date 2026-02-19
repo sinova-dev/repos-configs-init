@@ -112,7 +112,7 @@ export async function setupEslint() {
         message: 'Which ESLint preset do you want to set up?',
         default: 'frontend',
         choices: [
-          { name: 'Frontend (Next.js / React)', value: 'frontend' },
+          { name: 'Frontend (Next.js)', value: 'frontend' },
           { name: 'Backend (NestJS)', value: 'backend' },
         ],
       },
@@ -143,18 +143,19 @@ export async function setupEslint() {
   const configFilename = path.basename(eslintConfigPath);
 
   try {
-    const existingConfig = await fs.readFile(eslintConfigPath, 'utf-8');
+    const existingConfig = await fs.readFile(eslintConfigPath, 'utf-8').catch((err) => {
+      if (err.code === 'ENOENT') return null;
+      throw err;
+    });
     const configContent = generateConfigContent({ packageName: packageJson.name, preset, existingConfig });
     await fs.writeFile(eslintConfigPath, configContent);
-    console.info(`✅ ${configFilename} updated with new config (previous config commented out).`);
+    console.info(
+      existingConfig
+        ? `✅ ${configFilename} updated with new config (previous config commented out).`
+        : `✅ ${configFilename} created.`,
+    );
   } catch (err) {
-    if (err.code === 'ENOENT') {
-      const configContent = generateConfigContent({ packageName: packageJson.name, preset });
-      await fs.writeFile(eslintConfigPath, configContent);
-      console.info(`✅ ${configFilename} created.`);
-    } else {
-      handleError('Error handling config file', err);
-    }
+    handleError('Error handling config file', err);
   }
 
   const targetPackageJsonPath = path.join(projectRoot, 'package.json');
@@ -173,7 +174,6 @@ export async function setupEslint() {
 
     targetPackageJson.scripts = merge({}, targetPackageJson.scripts, lintScripts);
 
-    // Add ESLint to lint-staged for pre-commit hooks
     if (!targetPackageJson['lint-staged']) {
       targetPackageJson['lint-staged'] = {};
     }
