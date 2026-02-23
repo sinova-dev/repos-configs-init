@@ -31,23 +31,9 @@ function getConfigImportPath(packageName, preset) {
 
 function generateConfigContent({ packageName, preset, existingConfig = null }) {
   const configPath = getConfigImportPath(packageName, preset);
-  const importLine = `import { createConfig } from '${configPath}';`;
+  const baseConfig = `import { createConfig } from '${configPath}';
 
-  const baseConfigLine = 'const baseConfig = createConfig(__dirname);';
-
-  const exportLine = `export default [
-  ...baseConfig
-];`;
-
-  const baseConfig = `${importLine}
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-${baseConfigLine}
-
-${exportLine}
+export default [...createConfig(process.cwd())];
 `;
 
   if (existingConfig) {

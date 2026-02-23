@@ -77,14 +77,8 @@ npx sinova-eslint-init --backend
 ```javascript
 // eslint.config.js
 import { createConfig } from '@sinova-development/repos-configs/eslint-config/nextjs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const baseConfig = createConfig(__dirname);
-
-export default [...baseConfig];
+export default [...createConfig(process.cwd())];
 ```
 
 **Use config directly (React):**
@@ -92,14 +86,8 @@ export default [...baseConfig];
 ```javascript
 // eslint.config.js
 import { createConfig } from '@sinova-development/repos-configs/eslint-config/react';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const baseConfig = createConfig(__dirname);
-
-export default [...baseConfig];
+export default [...createConfig(process.cwd())];
 ```
 
 **Use config directly (backend / NestJS):**
@@ -107,14 +95,8 @@ export default [...baseConfig];
 ```javascript
 // eslint.config.mjs
 import { createConfig } from '@sinova-development/repos-configs/eslint-config/backend';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const baseConfig = createConfig(__dirname);
-
-export default [...baseConfig];
+export default [...createConfig(process.cwd())];
 ```
 
 ### Husky Configuration
