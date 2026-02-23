@@ -43,14 +43,15 @@ npx sinova-prettier-init
 
 ### ESLint Configuration
 
-Flat configs for frontend (React, Next.js) and backend (NestJS) projects.
+Flat configs for frontend (React, Next.js) and backend (Node/TS, NestJS) projects.
 
 **Includes:**
 
 - Shared core rules (TypeScript strict + stylistic, imports, Unicorn, JSDoc, etc.)
 - **React** preset: React, React Hooks, Storybook, Playwright, i18next, check-file, JSX a11y (no Next.js)
 - **Next.js** preset: extends React + `@next/eslint-plugin-next`, App Router conventions (_eslint-plugin-tailwindcss disabled: TODO re-enable when it supports Tailwind CSS v4_)
-- **Backend** preset: NestJS typed rules (`@darraghor/eslint-plugin-nestjs-typed`)
+- **Backend** preset: generic Node/TS backend (core only, no framework plugins)
+- **NestJS** preset: extends Backend + `@darraghor/eslint-plugin-nestjs-typed`
 
 **Install ESLint only:**
 
@@ -72,6 +73,10 @@ npx sinova-eslint-init --react
 npx sinova-eslint-init --backend
 ```
 
+```bash
+npx sinova-eslint-init --nestjs
+```
+
 **Use config directly (Next.js):**
 
 ```javascript
@@ -90,11 +95,20 @@ import { createConfig } from '@sinova-development/repos-configs/eslint-config/re
 export default [...createConfig(process.cwd())];
 ```
 
-**Use config directly (backend / NestJS):**
+**Use config directly (backend):**
 
 ```javascript
 // eslint.config.mjs
 import { createConfig } from '@sinova-development/repos-configs/eslint-config/backend';
+
+export default [...createConfig(process.cwd())];
+```
+
+**Use config directly (NestJS):**
+
+```javascript
+// eslint.config.mjs
+import { createConfig } from '@sinova-development/repos-configs/eslint-config/nestjs';
 
 export default [...createConfig(process.cwd())];
 ```

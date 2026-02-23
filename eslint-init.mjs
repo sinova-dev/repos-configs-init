@@ -13,8 +13,10 @@ const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
 
 const projectRoot = process.cwd();
 
+const BACKEND_PRESETS = new Set(['backend', 'nestjs']);
+
 function getEslintConfigPath(preset) {
-  const filename = preset === 'backend' ? 'eslint.config.mjs' : 'eslint.config.js';
+  const filename = BACKEND_PRESETS.has(preset) ? 'eslint.config.mjs' : 'eslint.config.js';
   return path.join(projectRoot, filename);
 }
 
@@ -23,6 +25,7 @@ const CONFIG_PACKAGE_ONLY = [packageJson.name];
 function getConfigImportPath(packageName, preset) {
   const pathMap = {
     backend: `${packageName}/eslint-config/backend`,
+    nestjs: `${packageName}/eslint-config/nestjs`,
     react: `${packageName}/eslint-config/react`,
     nextjs: `${packageName}/eslint-config/nextjs`,
   };
@@ -62,6 +65,8 @@ export async function setupEslint() {
 
   if (args.has('--backend')) {
     preset = 'backend';
+  } else if (args.has('--nestjs')) {
+    preset = 'nestjs';
   } else if (args.has('--nextjs')) {
     preset = 'nextjs';
   } else if (args.has('--react')) {
@@ -76,7 +81,8 @@ export async function setupEslint() {
         choices: [
           { name: 'Next.js', value: 'nextjs' },
           { name: 'React (Vite, CRA, etc.)', value: 'react' },
-          { name: 'Backend (NestJS)', value: 'backend' },
+          { name: 'Backend (Node/TS)', value: 'backend' },
+          { name: 'NestJS', value: 'nestjs' },
         ],
       },
     ]);

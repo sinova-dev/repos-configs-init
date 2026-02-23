@@ -8,7 +8,8 @@
     "./eslint-config/core": "./eslint-config.core.mjs",
     "./eslint-config/react": "./eslint-config.react.mjs",
     "./eslint-config/nextjs": "./eslint-config.nextjs.mjs",
-    "./eslint-config/backend": "./eslint-config.backend.mjs"
+    "./eslint-config/backend": "./eslint-config.backend.mjs",
+    "./eslint-config/nestjs": "./eslint-config.nestjs.mjs"
   },
   "license": "MIT",
   "scripts": {
