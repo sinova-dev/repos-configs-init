@@ -18,38 +18,7 @@ function getEslintConfigPath(preset) {
   return path.join(projectRoot, filename);
 }
 
-const coreEslintPackages = [
-  packageJson.name,
-  '@eslint/eslintrc',
-  '@eslint-community/eslint-plugin-eslint-comments',
-  '@eslint/js',
-  'eslint',
-  'eslint-config-prettier',
-  'eslint-import-resolver-typescript',
-  'eslint-plugin-erasable-syntax-only',
-  'eslint-plugin-import',
-  'eslint-plugin-jsdoc',
-  'eslint-plugin-unicorn',
-  'globals',
-  'typescript-eslint',
-];
-
-const reactOnlyEslintPackages = [
-  'eslint-plugin-check-file',
-  'eslint-plugin-i18next',
-  'eslint-plugin-jsx-a11y',
-  'eslint-plugin-playwright',
-  'eslint-plugin-react',
-  'eslint-plugin-react-hooks',
-  'eslint-plugin-react-refresh',
-  'eslint-plugin-storybook',
-  // TODO: Re-enable when eslint-plugin-tailwindcss supports Tailwind CSS v4 (currently only supports v3).
-  // 'eslint-plugin-tailwindcss',
-];
-
-const nextjsOnlyEslintPackages = ['@next/eslint-plugin-next', ...reactOnlyEslintPackages];
-
-const backendOnlyEslintPackages = ['@darraghor/eslint-plugin-nestjs-typed'];
+const CONFIG_PACKAGE_ONLY = [packageJson.name];
 
 function getConfigImportPath(packageName, preset) {
   const pathMap = {
@@ -128,25 +97,12 @@ export async function setupEslint() {
     preset = response.preset;
   }
 
-  const requiredEslintPackages =
-    preset === 'backend'
-      ? [...coreEslintPackages, ...backendOnlyEslintPackages]
-      : preset === 'react'
-        ? [...coreEslintPackages, ...reactOnlyEslintPackages]
-        : [...coreEslintPackages, ...nextjsOnlyEslintPackages];
-
-  const peerDeps = packageJson.peerDependencies ?? {};
-  const packagesWithVersions = requiredEslintPackages.map((pkg) => {
-    const version = peerDeps[pkg];
-    return version ? `${pkg}@${version}` : pkg;
-  });
-
   try {
-    const installCmd = `pnpm add -D ${packagesWithVersions.join(' ')}`;
-    console.log(`📦 Running: ${installCmd}`);
+    const installCmd = `pnpm add -D ${CONFIG_PACKAGE_ONLY.join(' ')}`;
+    console.log(`📦 Installing config package (ESLint and plugins are bundled): ${installCmd}`);
     execSync(installCmd, { stdio: 'inherit' });
   } catch (err) {
-    handleError('Failed to install ESLint packages', err);
+    handleError('Failed to install config package', err);
   }
 
   const eslintConfigPath = getEslintConfigPath(preset);
