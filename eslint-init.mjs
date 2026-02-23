@@ -24,6 +24,7 @@ const CONFIG_PACKAGE_ONLY = [packageJson.name];
 
 function getConfigImportPath(packageName, preset) {
   const pathMap = {
+    frontend: `${packageName}/eslint-config/frontend`,
     backend: `${packageName}/eslint-config/backend`,
     nestjs: `${packageName}/eslint-config/nestjs`,
     react: `${packageName}/eslint-config/react`,
@@ -67,6 +68,8 @@ export async function setupEslint() {
     preset = 'backend';
   } else if (args.has('--nestjs')) {
     preset = 'nestjs';
+  } else if (args.has('--frontend')) {
+    preset = 'frontend';
   } else if (args.has('--nextjs')) {
     preset = 'nextjs';
   } else if (args.has('--react')) {
@@ -81,6 +84,7 @@ export async function setupEslint() {
         choices: [
           { name: 'Next.js', value: 'nextjs' },
           { name: 'React (Vite, CRA, etc.)', value: 'react' },
+          { name: 'Frontend (browser/JSX)', value: 'frontend' },
           { name: 'Backend (Node/TS)', value: 'backend' },
           { name: 'NestJS', value: 'nestjs' },
         ],

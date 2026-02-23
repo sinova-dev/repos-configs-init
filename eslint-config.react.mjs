@@ -13,13 +13,14 @@ import storybook from 'eslint-plugin-storybook';
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
-import { createCoreRecommendedConfigs, createCoreRulesConfig, createTailConfigs } from './eslint-config.core.mjs';
+import { createFrontendBaseConfig } from './eslint-config.frontend.mjs';
+import { createCoreRulesConfig, createTailConfigs } from './eslint-config.core.mjs';
 
 const reactIgnores = ['global.d.ts', 'tailwind.config.ts', 'playwright.config.ts', 'out/**'];
 
 /**
  * Creates the ESLint flat config for React (non-Next.js) frontend projects.
- * Pass the directory containing eslint.config.js (typically import.meta.dirname).
+ * Extends the generic frontend config and adds React, Storybook, i18next, Playwright, check-file.
  *
  * @param {string} configDir - The directory of the config file (project root)
  * @returns {import('eslint').Linter.Config[]}
@@ -32,7 +33,7 @@ export const createConfig = (configDir) => {
   });
 
   return defineConfig(
-    ...createCoreRecommendedConfigs(),
+    ...createFrontendBaseConfig(configDir),
 
     reactRefresh.configs.recommended,
     reactPlugin.configs.flat.recommended,
