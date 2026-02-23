@@ -10,26 +10,15 @@ import reactPlugin from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import storybook from 'eslint-plugin-storybook';
-// eslint-plugin-tailwindcss does not support Tailwind CSS v4. TODO: Re-enable when the plugin adds v4 support.
-// import tailwindcss from 'eslint-plugin-tailwindcss';
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
 import { createCoreRecommendedConfigs, createCoreRulesConfig, createTailConfigs } from './eslint-config.core.mjs';
 
-const frontendIgnores = [
-  'global.d.ts',
-  'next-env.d.ts',
-  'src/server/api/trpc.ts',
-  'tailwind.config.ts',
-  'playwright.config.ts',
-  'next.config.js',
-  '.next/**',
-  'out/**',
-];
+const reactIgnores = ['global.d.ts', 'tailwind.config.ts', 'playwright.config.ts', 'out/**'];
 
 /**
- * Creates the ESLint flat config for frontend projects.
+ * Creates the ESLint flat config for React (non-Next.js) frontend projects.
  * Pass the directory containing eslint.config.js (typically import.meta.dirname).
  *
  * @param {string} configDir - The directory of the config file (project root)
@@ -50,12 +39,8 @@ export const createConfig = (configDir) => {
     jsxA11y.flatConfigs.strict,
 
     storybook.configs['flat/recommended'],
-    // tailwindcss.configs['flat/recommended'],
     i18next.configs['flat/recommended'],
     playwright.configs['flat/recommended'],
-
-    // Convert legacy configs using FlatCompat
-    ...compat.extends('plugin:@next/next/recommended'),
 
     ...createCoreRulesConfig(configDir, {
       includeBrowserGlobals: true,
@@ -64,7 +49,6 @@ export const createConfig = (configDir) => {
         react: {
           version: 'detect',
         },
-        // tailwindcss: { callees: ['cn'] },
       },
       plugins: {
         'check-file': checkFile,
@@ -84,13 +68,11 @@ export const createConfig = (configDir) => {
         'check-file/folder-naming-convention': [
           'error',
           {
-            '**/!(.)/': 'NEXT_JS_APP_ROUTER_CASE',
+            '**/!(.)/': 'KEBAB_CASE',
           },
         ],
 
-        // 'tailwindcss/classnames-order': 'off',
-
-        'react-refresh/only-export-components': ['warn', { allowExportNames: ['metadata'], allowConstantExport: true }],
+        'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
 
         'react/function-component-definition': [
           'warn',
@@ -126,7 +108,7 @@ export const createConfig = (configDir) => {
       },
     }),
 
-    // File-specific overrides (frontend)
+    // File-specific overrides (React)
     {
       files: ['**/*.stories.*'],
       rules: {
@@ -155,28 +137,6 @@ export const createConfig = (configDir) => {
       },
     },
     {
-      files: [
-        'src/app/**/layout.{js,jsx,ts,tsx}',
-        'src/app/**/page.{js,jsx,ts,tsx}',
-        'src/app/**/error.{js,jsx,ts,tsx}',
-        'src/app/**/loading.{js,jsx,ts,tsx}',
-        'src/app/**/forbidden.{js,jsx,ts,tsx}',
-        'src/app/**/default.{js,jsx,ts,tsx}',
-        'src/app/**/not-found.{js,jsx,ts,tsx}',
-        'src/app/**/template.{js,jsx,ts,tsx}',
-        'src/app/**/unauthorized.{js,jsx,ts,tsx}',
-      ],
-      rules: {
-        'import/no-default-export': 'off',
-      },
-    },
-    {
-      files: ['**/i18n/*.{js,ts}'],
-      rules: {
-        'import/no-default-export': 'off',
-      },
-    },
-    {
       files: ['.prettierrc.mjs'],
       rules: {
         'import/no-default-export': 'off',
@@ -194,12 +154,6 @@ export const createConfig = (configDir) => {
         'react-refresh/only-export-components': 'off',
       },
     },
-    {
-      files: ['src/lib/db/**/*.{js,ts}'],
-      rules: {
-        'react/no-is-mounted': 'off',
-      },
-    },
 
     // E2E tests configuration
     {
@@ -215,6 +169,6 @@ export const createConfig = (configDir) => {
       extends: [tseslint.configs.disableTypeChecked],
     },
 
-    ...createTailConfigs({ extraIgnores: frontendIgnores }),
+    ...createTailConfigs({ extraIgnores: reactIgnores }),
   );
 };

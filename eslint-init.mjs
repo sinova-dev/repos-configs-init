@@ -34,8 +34,7 @@ const coreEslintPackages = [
   'typescript-eslint',
 ];
 
-const frontendOnlyEslintPackages = [
-  '@next/eslint-plugin-next',
+const reactOnlyEslintPackages = [
   'eslint-plugin-check-file',
   'eslint-plugin-i18next',
   'eslint-plugin-jsx-a11y',
@@ -48,18 +47,24 @@ const frontendOnlyEslintPackages = [
   // 'eslint-plugin-tailwindcss',
 ];
 
+const nextjsOnlyEslintPackages = ['@next/eslint-plugin-next', ...reactOnlyEslintPackages];
+
 const backendOnlyEslintPackages = ['@darraghor/eslint-plugin-nestjs-typed'];
 
-function generateConfigContent({ packageName, preset, existingConfig = null }) {
-  const importLine =
-    preset === 'backend'
-      ? `import { createConfig } from '${packageName}/eslint-config/backend';`
-      : `import { createConfig } from '${packageName}/eslint-config/frontend';`;
+function getConfigImportPath(packageName, preset) {
+  const pathMap = {
+    backend: `${packageName}/eslint-config/backend`,
+    react: `${packageName}/eslint-config/react`,
+    nextjs: `${packageName}/eslint-config/nextjs`,
+  };
+  return pathMap[preset] ?? `${packageName}/eslint-config/nextjs`;
+}
 
-  const baseConfigLine =
-    preset === 'backend'
-      ? 'const baseConfig = createConfig(__dirname);'
-      : 'const baseConfig = createConfig(__dirname);';
+function generateConfigContent({ packageName, preset, existingConfig = null }) {
+  const configPath = getConfigImportPath(packageName, preset);
+  const importLine = `import { createConfig } from '${configPath}';`;
+
+  const baseConfigLine = 'const baseConfig = createConfig(__dirname);';
 
   const exportLine = `export default [
   ...baseConfig
@@ -102,17 +107,20 @@ export async function setupEslint() {
 
   if (args.has('--backend')) {
     preset = 'backend';
-  } else if (args.has('--frontend')) {
-    preset = 'frontend';
+  } else if (args.has('--nextjs')) {
+    preset = 'nextjs';
+  } else if (args.has('--react')) {
+    preset = 'react';
   } else {
     const response = await inquirer.prompt([
       {
         type: 'list',
         name: 'preset',
         message: 'Which ESLint preset do you want to set up?',
-        default: 'frontend',
+        default: 'nextjs',
         choices: [
-          { name: 'Frontend (Next.js)', value: 'frontend' },
+          { name: 'Next.js', value: 'nextjs' },
+          { name: 'React (Vite, CRA, etc.)', value: 'react' },
           { name: 'Backend (NestJS)', value: 'backend' },
         ],
       },
@@ -123,7 +131,9 @@ export async function setupEslint() {
   const requiredEslintPackages =
     preset === 'backend'
       ? [...coreEslintPackages, ...backendOnlyEslintPackages]
-      : [...coreEslintPackages, ...frontendOnlyEslintPackages];
+      : preset === 'react'
+        ? [...coreEslintPackages, ...reactOnlyEslintPackages]
+        : [...coreEslintPackages, ...nextjsOnlyEslintPackages];
 
   const peerDeps = packageJson.peerDependencies ?? {};
   const packagesWithVersions = requiredEslintPackages.map((pkg) => {

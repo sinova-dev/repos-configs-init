@@ -43,13 +43,14 @@ npx sinova-prettier-init
 
 ### ESLint Configuration
 
-Flat configs for frontend (Next.js/React) and backend (NestJS) projects.
+Flat configs for frontend (React, Next.js) and backend (NestJS) projects.
 
 **Includes:**
 
 - Shared core rules (TypeScript strict + stylistic, imports, Unicorn, JSDoc, etc.)
-- Frontend preset: Next.js, React, Storybook, Playwright, i18next, check-file, JSX a11y (_eslint-plugin-tailwindcss disabled: TODO re-enable when it supports Tailwind CSS v4_)
-- Backend preset: NestJS typed rules (`@darraghor/eslint-plugin-nestjs-typed`)
+- **React** preset: React, React Hooks, Storybook, Playwright, i18next, check-file, JSX a11y (no Next.js)
+- **Next.js** preset: extends React + `@next/eslint-plugin-next`, App Router conventions (_eslint-plugin-tailwindcss disabled: TODO re-enable when it supports Tailwind CSS v4_)
+- **Backend** preset: NestJS typed rules (`@darraghor/eslint-plugin-nestjs-typed`)
 
 **Install ESLint only:**
 
@@ -60,18 +61,37 @@ npx sinova-eslint-init
 **Install ESLint only (choose preset):**
 
 ```bash
-npx sinova-eslint-init --frontend
+npx sinova-eslint-init --nextjs
+```
+
+```bash
+npx sinova-eslint-init --react
 ```
 
 ```bash
 npx sinova-eslint-init --backend
 ```
 
-**Use config directly (frontend):**
+**Use config directly (Next.js):**
 
 ```javascript
 // eslint.config.js
-import { createConfig } from '@sinova-development/repos-configs/eslint-config/frontend';
+import { createConfig } from '@sinova-development/repos-configs/eslint-config/nextjs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const baseConfig = createConfig(__dirname);
+
+export default [...baseConfig];
+```
+
+**Use config directly (React):**
+
+```javascript
+// eslint.config.js
+import { createConfig } from '@sinova-development/repos-configs/eslint-config/react';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -85,7 +105,7 @@ export default [...baseConfig];
 **Use config directly (backend / NestJS):**
 
 ```javascript
-// eslint.config.js
+// eslint.config.mjs
 import { createConfig } from '@sinova-development/repos-configs/eslint-config/backend';
 import path from 'path';
 import { fileURLToPath } from 'url';
