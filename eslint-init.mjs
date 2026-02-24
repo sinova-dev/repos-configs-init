@@ -15,9 +15,35 @@ const projectRoot = process.cwd();
 
 const BACKEND_PRESETS = new Set(['backend', 'nestjs']);
 
+/** All known ESLint config filenames (flat + legacy). Generated config replaces any of these. */
+const ESLINT_CONFIG_FILENAMES = [
+  'eslint.config.js',
+  'eslint.config.mjs',
+  'eslint.config.cjs',
+  '.eslintrc.js',
+  '.eslintrc.cjs',
+  '.eslintrc.yaml',
+  '.eslintrc.yml',
+  '.eslintrc.json',
+];
+
 function getEslintConfigPath(preset) {
   const filename = BACKEND_PRESETS.has(preset) ? 'eslint.config.mjs' : 'eslint.config.js';
   return path.join(projectRoot, filename);
+}
+
+async function removeOtherEslintConfigs(keepPath) {
+  const keepFilename = path.basename(keepPath);
+  for (const name of ESLINT_CONFIG_FILENAMES) {
+    if (name === keepFilename) continue;
+    const filePath = path.join(projectRoot, name);
+    try {
+      await fs.unlink(filePath);
+      console.info(`✅ Removed existing ${name}`);
+    } catch (err) {
+      if (err.code !== 'ENOENT') throw err;
+    }
+  }
 }
 
 const CONFIG_PACKAGE_ONLY = [packageJson.name];
@@ -105,6 +131,8 @@ export async function setupEslint() {
   const configFilename = path.basename(eslintConfigPath);
 
   try {
+    await removeOtherEslintConfigs(eslintConfigPath);
+
     const existingConfig = await fs.readFile(eslintConfigPath, 'utf-8').catch((err) => {
       if (err.code === 'ENOENT') return null;
       throw err;
