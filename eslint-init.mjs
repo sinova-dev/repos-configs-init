@@ -101,22 +101,38 @@ export async function setupEslint() {
   } else if (args.has('--react')) {
     preset = 'react';
   } else {
-    const response = await inquirer.prompt([
+    const { stack } = await inquirer.prompt([
       {
         type: 'list',
-        name: 'preset',
-        message: 'Which ESLint preset do you want to set up?',
-        default: 'nextjs',
+        name: 'stack',
+        message: 'Frontend or backend?',
         choices: [
-          { name: 'Next.js', value: 'nextjs' },
-          { name: 'React (Vite, CRA, etc.)', value: 'react' },
-          { name: 'Frontend (browser/JSX)', value: 'frontend' },
-          { name: 'Backend (Node/TS)', value: 'backend' },
-          { name: 'NestJS', value: 'nestjs' },
+          { name: 'Frontend', value: 'frontend' },
+          { name: 'Backend', value: 'backend' },
         ],
       },
     ]);
-    preset = response.preset;
+
+    const frontendPresets = [
+      { name: 'Next.js', value: 'nextjs' },
+      { name: 'React (Vite, CRA, etc.)', value: 'react' },
+      { name: 'Frontend (browser/JSX)', value: 'frontend' },
+    ];
+    const backendPresets = [
+      { name: 'NestJS', value: 'nestjs' },
+      { name: 'Backend (Node/TS)', value: 'backend' },
+    ];
+
+    const { preset: chosenPreset } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'preset',
+        message: stack === 'frontend' ? 'Which frontend preset?' : 'Which backend preset?',
+        default: stack === 'frontend' ? 'nextjs' : 'nestjs',
+        choices: stack === 'frontend' ? frontendPresets : backendPresets,
+      },
+    ]);
+    preset = chosenPreset;
   }
 
   try {
