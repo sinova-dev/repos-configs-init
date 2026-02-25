@@ -1,7 +1,7 @@
 import eslintNestJs from '@darraghor/eslint-plugin-nestjs-typed';
 import { defineConfig } from 'eslint/config';
 
-import { createConfig as createBackendConfig } from './eslint-config.backend.mjs';
+import { createConfig as createBackendConfig } from './backend.mjs';
 
 /**
  * @typedef {'none' | 'prisma'} OrmOption

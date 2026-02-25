@@ -8,7 +8,7 @@ import inquirer from 'inquirer';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const packageJsonPath = path.join(__dirname, 'package.json');
+const packageJsonPath = path.join(__dirname, '..', 'package.json');
 const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
 
 const projectRoot = process.cwd();
@@ -238,7 +238,7 @@ export async function setupEslint() {
   }
 }
 
-// Run when executed directly (e.g. node eslint-init.mjs or via bin)
+// Run when executed directly (e.g. node eslint/init.mjs or via bin)
 const __filename = fileURLToPath(import.meta.url);
 if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(__filename)) {
   setupEslint().catch((err) => {

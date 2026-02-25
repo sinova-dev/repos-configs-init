@@ -1,6 +1,6 @@
 import { defineConfig } from 'eslint/config';
 
-import { createCoreRecommendedConfigs, createCoreRulesConfig, createTailConfigs } from './eslint-config.core.mjs';
+import { createCoreRecommendedConfigs, createCoreRulesConfig, createTailConfigs } from './core.mjs';
 
 const frontendIgnores = ['global.d.ts', 'tailwind.config.ts', 'playwright.config.ts', 'out/**'];
 

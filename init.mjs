@@ -3,7 +3,7 @@ import inquirer from 'inquirer';
 
 import { setupPrettier } from './prettier-init.mjs';
 import { setupHusky } from './husky-init.mjs';
-import { setupEslint } from './eslint-init.mjs';
+import { setupEslint } from './eslint/init.mjs';
 
 async function main() {
   console.log('🚀 Initializing development tools...');

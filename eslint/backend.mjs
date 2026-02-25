@@ -1,7 +1,7 @@
 import { defineConfig } from 'eslint/config';
 
-import { createCoreRecommendedConfigs, createCoreRulesConfig, createTailConfigs } from './eslint-config.core.mjs';
-import { getPrismaConfig } from './eslint-config.orm-prisma.mjs';
+import { createCoreRecommendedConfigs, createCoreRulesConfig, createTailConfigs } from './core.mjs';
+import { getPrismaConfig } from './orm-prisma.mjs';
 
 const backendIgnores = [];
 

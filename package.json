@@ -5,13 +5,13 @@
   "type": "module",
   "exports": {
     "./prettier-config": "./prettier-config.js",
-    "./eslint-config/core": "./eslint-config.core.mjs",
-    "./eslint-config/frontend": "./eslint-config.frontend.mjs",
-    "./eslint-config/react": "./eslint-config.react.mjs",
-    "./eslint-config/nextjs": "./eslint-config.nextjs.mjs",
-    "./eslint-config/backend": "./eslint-config.backend.mjs",
-    "./eslint-config/nestjs": "./eslint-config.nestjs.mjs",
-    "./eslint-config/orm-prisma": "./eslint-config.orm-prisma.mjs"
+    "./eslint-config/core": "./eslint/core.mjs",
+    "./eslint-config/frontend": "./eslint/frontend.mjs",
+    "./eslint-config/react": "./eslint/react.mjs",
+    "./eslint-config/nextjs": "./eslint/nextjs.mjs",
+    "./eslint-config/backend": "./eslint/backend.mjs",
+    "./eslint-config/nestjs": "./eslint/nestjs.mjs",
+    "./eslint-config/orm-prisma": "./eslint/orm-prisma.mjs"
   },
   "license": "MIT",
   "scripts": {
@@ -22,7 +22,7 @@
   },
   "bin": {
     "sinova-general-config-init": "./init.mjs",
-    "sinova-eslint-init": "./eslint-init.mjs",
+    "sinova-eslint-init": "./eslint/init.mjs",
     "sinova-husky-init": "./husky-init.mjs",
     "sinova-prettier-init": "./prettier-init.mjs"
   },

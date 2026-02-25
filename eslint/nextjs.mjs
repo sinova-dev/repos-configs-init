@@ -4,8 +4,8 @@ import { FlatCompat } from '@eslint/eslintrc';
 import js from '@eslint/js';
 import { defineConfig } from 'eslint/config';
 
-import { createConfig as createReactConfig } from './eslint-config.react.mjs';
-import { createTailConfigs } from './eslint-config.core.mjs';
+import { createConfig as createReactConfig } from './react.mjs';
+import { createTailConfigs } from './core.mjs';
 
 const nextJsExtraIgnores = ['next-env.d.ts', 'next.config.js', '.next/**', 'src/server/api/trpc.ts'];
 

@@ -13,8 +13,8 @@ import storybook from 'eslint-plugin-storybook';
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
-import { createFrontendBaseConfig } from './eslint-config.frontend.mjs';
-import { createCoreRulesConfig, createTailConfigs } from './eslint-config.core.mjs';
+import { createFrontendBaseConfig } from './frontend.mjs';
+import { createCoreRulesConfig, createTailConfigs } from './core.mjs';
 
 const reactIgnores = ['global.d.ts', 'tailwind.config.ts', 'playwright.config.ts', 'out/**'];
 
