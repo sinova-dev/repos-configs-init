@@ -6,6 +6,8 @@ import { fileURLToPath } from 'url';
 import merge from 'lodash.merge';
 import inquirer from 'inquirer';
 
+import { runWhenMain } from '../helpers/run-when-main.mjs';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const packageJsonPath = path.join(__dirname, '..', 'package.json');
@@ -238,11 +240,4 @@ export async function setupEslint() {
   }
 }
 
-// Run when executed directly (e.g. node eslint/init.mjs or via bin)
-const __filename = fileURLToPath(import.meta.url);
-if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(__filename)) {
-  setupEslint().catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
-}
+runWhenMain(import.meta.url, setupEslint);

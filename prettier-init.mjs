@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import merge from 'lodash.merge';
 
 import { requiredPlugins } from './prettier-config.js';
+import { runWhenMain } from './helpers/run-when-main.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -111,11 +112,4 @@ pnpm-lock.yaml
   }
 }
 
-// Run when executed directly (e.g. node prettier-init.mjs or via bin)
-const __filename = fileURLToPath(import.meta.url);
-if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(__filename)) {
-  setupPrettier().catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
-}
+runWhenMain(import.meta.url, setupPrettier);

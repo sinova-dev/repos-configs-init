@@ -2,8 +2,8 @@
 import fs from 'fs/promises';
 import { execSync } from 'child_process';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import merge from 'lodash.merge';
+import { runWhenMain } from './helpers/run-when-main.mjs';
 
 const baseConfig = {
   '**/*': 'prettier --write --ignore-unknown',
@@ -62,11 +62,4 @@ export async function setupHusky() {
   }
 }
 
-// Run when executed directly (e.g. node husky-init.mjs or via bin)
-const __filename = fileURLToPath(import.meta.url);
-if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(__filename)) {
-  setupHusky().catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
-}
+runWhenMain(import.meta.url, setupHusky);
