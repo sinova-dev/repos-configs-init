@@ -228,7 +228,7 @@ export async function setupEslint() {
       targetPackageJson['lint-staged'] = {};
     }
     targetPackageJson['lint-staged'] = merge({}, targetPackageJson['lint-staged'], {
-      '**/*.{js,jsx,ts,tsx,mjs,cjs}': 'eslint --fix',
+      '**/*.{js,jsx,ts,tsx,mjs,cjs}': 'eslint',
     });
 
     await fs.writeFile(targetPackageJsonPath, JSON.stringify(targetPackageJson, null, 2) + '\n');

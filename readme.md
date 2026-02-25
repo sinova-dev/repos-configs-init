@@ -47,18 +47,20 @@ Flat configs for frontend (React, Next.js) and backend (Node/TS, NestJS) project
 
 **Includes:**
 
-- Shared core rules (TypeScript strict + stylistic, imports, Unicorn, JSDoc, etc.)
+- Shared **core** rules (TypeScript strict + stylistic, imports, Unicorn, JSDoc, erasable-syntax-only, etc.)
 - **Frontend** preset: generic browser/JSX (core + browser globals, no React/Next)
 - **React** preset: extends Frontend + React, React Hooks, Storybook, Playwright, i18next, check-file, JSX a11y
 - **Next.js** preset: extends React + `@next/eslint-plugin-next`, App Router conventions (_eslint-plugin-tailwindcss disabled: TODO re-enable when it supports Tailwind CSS v4_)
-- **Backend** preset: generic Node/TS backend (core only, no framework plugins)
-- **NestJS** preset: extends Backend + `@darraghor/eslint-plugin-nestjs-typed`
+- **Backend** preset: generic Node/TS backend (core only, no framework plugins). Optional **Prisma** ORM rules via `orm: 'prisma'`
+- **NestJS** preset: extends Backend + `@darraghor/eslint-plugin-nestjs-typed`. Optional **Prisma** ORM rules via `orm: 'prisma'`
 
 **Install ESLint only:**
 
 ```bash
 npx sinova-eslint-init
 ```
+
+When run interactively, you choose frontend/backend, then preset (Next.js, React, Frontend, NestJS, Backend). For backend or NestJS you can optionally choose Prisma to add `@v2nic/eslint-plugin-prisma` rules (schema + TypeScript).
 
 **Install ESLint only (choose preset):**
 
@@ -118,6 +120,15 @@ import { createConfig } from '@sinova-development/repos-configs/eslint-config/ba
 export default [...createConfig(process.cwd())];
 ```
 
+**Use config directly (backend with Prisma):**
+
+```javascript
+// eslint.config.mjs
+import { createConfig } from '@sinova-development/repos-configs/eslint-config/backend';
+
+export default [...createConfig(process.cwd(), { orm: 'prisma' })];
+```
+
 **Use config directly (NestJS):**
 
 ```javascript
@@ -125,6 +136,15 @@ export default [...createConfig(process.cwd())];
 import { createConfig } from '@sinova-development/repos-configs/eslint-config/nestjs';
 
 export default [...createConfig(process.cwd())];
+```
+
+**Use config directly (NestJS with Prisma):**
+
+```javascript
+// eslint.config.mjs
+import { createConfig } from '@sinova-development/repos-configs/eslint-config/nestjs';
+
+export default [...createConfig(process.cwd(), { orm: 'prisma' })];
 ```
 
 ### Husky Configuration
@@ -149,7 +169,7 @@ npx sinova-husky-init
 {
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown",
-    "**/*.{js,jsx,ts,tsx,mjs,cjs}": "eslint --fix"
+    "**/*.{js,jsx,ts,tsx,mjs,cjs}": "eslint"
   }
 }
 ```
@@ -158,16 +178,9 @@ npx sinova-husky-init
 
 ## Scripts
 
-After installation, the following scripts are added to `package.json`:
+When using `sinova-eslint-init`, the following are added or updated in `package.json`:
 
-```json
-{
-  "scripts": {
-    "format": "prettier . --write --log-level=warn",
-    "format:check": "prettier . --check --log-level=warn",
-    "lint": "eslint . --max-warnings=0 --cache",
-    "lint:fix": "eslint . --fix",
-    "pre-commit": "pnpm install && git add pnpm-lock.yaml && pnpm lint-staged --allow-empty && tsc --noEmit"
-  }
-}
-```
+- **Lint scripts:** `lint` and `lint:fix` (e.g. `eslint . --max-warnings=0 --cache` and same with `--fix`)
+- **Lint-staged:** `**/*.{js,jsx,ts,tsx,mjs,cjs}` → `eslint`
+
+Other scripts (e.g. `format`, `format:check`, `pre-commit`) come from the general setup or your project.
