@@ -59,11 +59,14 @@ function getConfigImportPath(packageName, preset) {
   return pathMap[preset] ?? `${packageName}/eslint-config/nextjs`;
 }
 
-function generateConfigContent({ packageName, preset, existingConfig = null }) {
+function generateConfigContent({ packageName, preset, orm = 'none', existingConfig = null }) {
   const configPath = getConfigImportPath(packageName, preset);
+  const useOrmOption = orm === 'prisma' && (preset === 'backend' || preset === 'nestjs');
+  const configArg = useOrmOption ? "process.cwd(), { orm: 'prisma' }" : 'process.cwd()';
+
   const baseConfig = `import { createConfig } from '${configPath}';
 
-export default [...createConfig(process.cwd())];
+export default [...createConfig(${configArg})];
 `;
 
   if (existingConfig) {
@@ -89,6 +92,7 @@ export async function setupEslint() {
 
   const args = new Set(process.argv.slice(2));
   let preset;
+  let orm = 'none';
 
   if (args.has('--backend')) {
     preset = 'backend';
@@ -133,11 +137,27 @@ export async function setupEslint() {
       },
     ]);
     preset = chosenPreset;
+
+    if (stack === 'backend') {
+      const { orm: chosenOrm } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'orm',
+          message: 'Which ORM?',
+          default: 'none',
+          choices: [
+            { name: 'No ORM', value: 'none' },
+            { name: 'Prisma', value: 'prisma' },
+          ],
+        },
+      ]);
+      orm = chosenOrm;
+    }
   }
 
   try {
     const installCmd = `pnpm add -D ${CONFIG_PACKAGE_ONLY.join(' ')}`;
-    console.log(`📦 Installing config package (ESLint and plugins are bundled): ${installCmd}`);
+    console.log(`📦 Running: ${installCmd}`);
     execSync(installCmd, { stdio: 'inherit' });
   } catch (err) {
     handleError('Failed to install config package', err);
@@ -153,7 +173,12 @@ export async function setupEslint() {
       if (err.code === 'ENOENT') return null;
       throw err;
     });
-    const configContent = generateConfigContent({ packageName: packageJson.name, preset, existingConfig });
+    const configContent = generateConfigContent({
+      packageName: packageJson.name,
+      preset,
+      orm,
+      existingConfig,
+    });
     await fs.writeFile(eslintConfigPath, configContent);
     console.info(
       existingConfig

@@ -4,15 +4,24 @@ import { defineConfig } from 'eslint/config';
 import { createConfig as createBackendConfig } from './eslint-config.backend.mjs';
 
 /**
+ * @typedef {'none' | 'prisma'} OrmOption
+ * @typedef {import('eslint').Linter.RulesRecord} OrmRuleOverrides
+ * @typedef {{ orm?: OrmOption, ormRuleOverrides?: OrmRuleOverrides }} NestjsConfigOptions
+ */
+
+/**
  * Creates the ESLint flat config for NestJS backend projects.
  * Extends the generic backend config and adds NestJS-typed rules.
  *
  * @param {string} configDir - The directory of the config file (project root)
+ * @param {NestjsConfigOptions} [options]
+ * @param {OrmOption} [options.orm='none'] - ORM to add rules for (passed to backend config)
+ * @param {OrmRuleOverrides} [options.ormRuleOverrides] - Override ORM rules (passed to backend config)
  * @returns {import('eslint').Linter.Config[]}
  */
-export const createConfig = (configDir) => {
+export const createConfig = (configDir, options = {}) => {
   return defineConfig(
-    ...createBackendConfig(configDir),
+    ...createBackendConfig(configDir, options),
 
     eslintNestJs.configs.flatRecommended,
 
