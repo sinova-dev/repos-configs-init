@@ -194,9 +194,10 @@ export async function setupEslint() {
   try {
     const targetPackageJson = JSON.parse(await fs.readFile(targetPackageJsonPath, 'utf-8'));
 
+    const lintCmd = 'eslint . --max-warnings=0 --cache';
     const lintScripts = {
-      lint: 'eslint . --max-warnings=0 --cache',
-      'lint:fix': 'eslint . --fix',
+      lint: lintCmd,
+      'lint:fix': `${lintCmd} --fix`,
     };
 
     if (!targetPackageJson.scripts) {
