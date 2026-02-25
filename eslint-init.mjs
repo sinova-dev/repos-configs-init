@@ -203,7 +203,25 @@ export async function setupEslint() {
       targetPackageJson.scripts = {};
     }
 
-    targetPackageJson.scripts = merge({}, targetPackageJson.scripts, lintScripts);
+    const scripts = targetPackageJson.scripts;
+    const newScripts = {};
+    const hasLint = 'lint' in scripts;
+
+    for (const key of Object.keys(scripts)) {
+      if (key === 'lint:fix') continue;
+      if (key === 'lint') {
+        newScripts.lint = lintScripts.lint;
+        newScripts['lint:fix'] = lintScripts['lint:fix'];
+        continue;
+      }
+      newScripts[key] = scripts[key];
+    }
+    if (!hasLint) {
+      newScripts.lint = lintScripts.lint;
+      newScripts['lint:fix'] = lintScripts['lint:fix'];
+    }
+
+    targetPackageJson.scripts = newScripts;
 
     if (!targetPackageJson['lint-staged']) {
       targetPackageJson['lint-staged'] = {};
