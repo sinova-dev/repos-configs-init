@@ -32,6 +32,8 @@ export const createConfig = (configDir, options = {}) => {
         '@darraghor/nestjs-typed/provided-injected-should-match-factory-parameters': 'off',
         // Throws errors when using parameter property shorthands in constructor, which is very common in NestJS.
         'erasable-syntax-only/parameter-properties': 'off',
+        // NestJS relies on classes for DI, decorators, and modules; many look “empty” but are required.
+        '@typescript-eslint/no-extraneous-class': 'off',
       },
     },
   );
