@@ -70,7 +70,7 @@ export function createCoreRulesConfig(configDir, options = {}) {
   const {
     extraGlobals = {},
     includeBrowserGlobals = false,
-    enableJsx = false,
+    enableJsx: shouldEnableJsx = false,
     settings: extraSettings = {},
     plugins: extraPlugins = {},
     rules: extraRules = {},
@@ -91,7 +91,7 @@ export function createCoreRulesConfig(configDir, options = {}) {
         sourceType: 'module',
         parser: tseslint.parser,
         parserOptions: {
-          ...(enableJsx
+          ...(shouldEnableJsx
             ? {
                 ecmaFeatures: {
                   jsx: true,
