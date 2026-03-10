@@ -9,7 +9,7 @@ import { runWhenMain } from '../helpers/run-when-main.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const packageJsonPath = path.join(__dirname, '..', 'package.json');
+const packageJsonPath = path.join(__dirname, '../package.json');
 const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
 
 const projectRoot = process.cwd();
