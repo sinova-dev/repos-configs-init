@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import inquirer from 'inquirer';
 
 import { setupPrettier } from './prettier-init.mjs';
