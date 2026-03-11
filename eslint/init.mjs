@@ -14,7 +14,7 @@ const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
 
 const projectRoot = process.cwd();
 
-const BACKEND_PRESETS = new Set(['backend', 'nestjs']);
+const MJS_CONFIG_PRESETS = new Set(['backend', 'nestjs']);
 
 /** All known ESLint config filenames (flat + legacy). Generated config replaces any of these. */
 const ESLINT_CONFIG_FILENAMES = [
@@ -30,7 +30,7 @@ const ESLINT_CONFIG_FILENAMES = [
 ];
 
 function getEslintConfigPath(preset) {
-  const filename = BACKEND_PRESETS.has(preset) ? 'eslint.config.mjs' : 'eslint.config.js';
+  const filename = MJS_CONFIG_PRESETS.has(preset) ? 'eslint.config.mjs' : 'eslint.config.js';
   return path.join(projectRoot, filename);
 }
 
