@@ -196,7 +196,6 @@ export function createCoreRulesConfig(configDir, options = {}) {
           },
         ],
 
-        // Unicorn plugin rules to disable / configure
         'unicorn/expiring-todo-comments': 'off',
         'unicorn/filename-case': 'off',
         'unicorn/no-array-reduce': 'off',
@@ -216,7 +215,6 @@ export function createCoreRulesConfig(configDir, options = {}) {
         'unicorn/no-array-sort': 'off',
         'unicorn/no-array-reverse': 'off',
 
-        // JSDoc rules
         'jsdoc/tag-lines': 'off',
 
         ...extraRules,
