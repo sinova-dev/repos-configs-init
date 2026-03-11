@@ -48,8 +48,6 @@ async function removeOtherEslintConfigs(keepPath) {
   }
 }
 
-const CONFIG_PACKAGE_ONLY = [packageJson.name];
-
 function getConfigImportPath(packageName, preset) {
   const pathMap = {
     frontend: `${packageName}/eslint-config/frontend`,
@@ -158,7 +156,7 @@ export async function setupEslint() {
   }
 
   try {
-    const installCmd = `pnpm add -D ${CONFIG_PACKAGE_ONLY.join(' ')}`;
+    const installCmd = `pnpm add -D ${packageJson.name}`;
     console.log(`📦 Running: ${installCmd}`);
     execSync(installCmd, { stdio: 'inherit' });
   } catch (err) {
