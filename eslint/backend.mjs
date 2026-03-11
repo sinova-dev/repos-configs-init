@@ -5,6 +5,8 @@ import { getPrismaConfig } from './orm-prisma.mjs';
 
 const backendIgnores = [];
 
+export const ORM = Object.freeze({ NONE: 'none', PRISMA: 'prisma' });
+
 /**
  * @typedef {'none' | 'prisma'} OrmOption
  * @typedef {import('eslint').Linter.RulesRecord} OrmRuleOverrides
@@ -22,8 +24,13 @@ const backendIgnores = [];
  * @returns {import('eslint').Linter.Config[]}
  */
 export const createConfig = (configDir, options = {}) => {
-  const { orm = 'none', ormRuleOverrides = {} } = options;
-  const ormConfigs = orm === 'prisma' ? getPrismaConfig(ormRuleOverrides) : [];
+  const { orm = ORM.NONE, ormRuleOverrides = {} } = options;
+
+  let ormConfigs = [];
+
+  if (orm === ORM.PRISMA) {
+    ormConfigs = getPrismaConfig(ormRuleOverrides);
+  }
 
   return defineConfig(
     ...createCoreRecommendedConfigs(),
