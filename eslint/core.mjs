@@ -1,5 +1,6 @@
 import path from 'node:path';
 
+import merge from 'lodash.merge';
 import comments from '@eslint-community/eslint-plugin-eslint-comments/configs';
 import js from '@eslint/js';
 import erasableSyntaxOnly from 'eslint-plugin-erasable-syntax-only';
@@ -76,12 +77,14 @@ export function createCoreRulesConfig(configDir, options = {}) {
     rules: extraRules = {},
   } = options;
 
-  const baseImportResolver = {
-    typescript: {
-      alwaysTryTypes: true,
-      project: './tsconfig.json',
+  const baseSettings = {
+    'import/resolver': {
+      typescript: {
+        alwaysTryTypes: true,
+        project: './tsconfig.json',
+      },
+      node: true,
     },
-    node: true,
   };
 
   return [
@@ -108,17 +111,7 @@ export function createCoreRulesConfig(configDir, options = {}) {
           ...extraGlobals,
         },
       },
-      settings: {
-        ...extraSettings,
-        'import/resolver': {
-          ...baseImportResolver,
-          ...(extraSettings?.['import/resolver'] ?? {}),
-          typescript: {
-            ...baseImportResolver.typescript,
-            ...(extraSettings?.['import/resolver']?.typescript ?? {}),
-          },
-        },
-      },
+      settings: merge({}, baseSettings, extraSettings),
       plugins: {
         ...extraPlugins,
       },
