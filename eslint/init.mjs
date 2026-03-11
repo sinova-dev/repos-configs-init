@@ -171,10 +171,14 @@ export async function setupEslint() {
   try {
     await removeOtherEslintConfigs(eslintConfigPath);
 
-    const existingConfig = await fs.readFile(eslintConfigPath, 'utf-8').catch((err) => {
-      if (err.code === 'ENOENT') return null;
-      throw err;
-    });
+    let existingConfig;
+    try {
+      existingConfig = fs.readFileSync(eslintConfigPath, 'utf-8');
+    } catch (error) {
+      if (error.code === 'ENOENT') existingConfig = null;
+      else throw error;
+    }
+
     const configContent = generateConfigContent({
       packageName: packageJson.name,
       preset,
