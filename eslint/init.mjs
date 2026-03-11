@@ -111,7 +111,7 @@ export async function setupEslint() {
       {
         type: 'list',
         name: 'stack',
-        message: 'Frontend or backend?',
+        message: 'Frontend or Backend?',
         choices: [
           { name: 'Frontend', value: 'frontend' },
           { name: 'Backend', value: 'backend' },
@@ -121,12 +121,12 @@ export async function setupEslint() {
 
     const frontendPresets = [
       { name: 'Next.js', value: 'nextjs' },
-      { name: 'React (Vite, CRA, etc.)', value: 'react' },
-      { name: 'Frontend (browser/JSX)', value: 'frontend' },
+      { name: 'React', value: 'react' },
+      { name: 'Basic Frontend', value: 'frontend' },
     ];
     const backendPresets = [
       { name: 'NestJS', value: 'nestjs' },
-      { name: 'Backend (Node/TS)', value: 'backend' },
+      { name: 'Basic Backend', value: 'backend' },
     ];
 
     const { preset: chosenPreset } = await inquirer.prompt([
