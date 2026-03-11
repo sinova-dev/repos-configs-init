@@ -58,7 +58,7 @@ export function createCoreRecommendedConfigs() {
  * @param {string} configDir - The directory of the config file (project root)
  * @param {object} [options]
  * @param {Record<string, boolean>} [options.extraGlobals] - Extra globals to merge in
- * @param {boolean} [options.includeBrowserGlobals]
+ * @param {boolean} [options.shouldIncludeBrowserGlobals]
  * @param {boolean} [options.enableJsx]
  * @param {import('eslint').Linter.Config['settings']} [options.settings]
  * @param {import('eslint').Linter.Config['plugins']} [options.plugins]
@@ -69,7 +69,7 @@ export function createCoreRulesConfig(configDir, options = {}) {
   const rootDir = path.resolve(configDir);
   const {
     extraGlobals = {},
-    includeBrowserGlobals = false,
+    shouldIncludeBrowserGlobals = false,
     enableJsx: shouldEnableJsx = false,
     settings: extraSettings = {},
     plugins: extraPlugins = {},
@@ -102,7 +102,7 @@ export function createCoreRulesConfig(configDir, options = {}) {
           tsconfigRootDir: rootDir,
         },
         globals: {
-          ...(includeBrowserGlobals ? globals.browser : {}),
+          ...(shouldIncludeBrowserGlobals ? globals.browser : {}),
           ...globals.node,
           ...globals.es2020,
           ...extraGlobals,
