@@ -44,8 +44,8 @@ export const createConfig = (configDir) => {
     playwright.configs['flat/recommended'],
 
     ...createCoreRulesConfig(configDir, {
-      includeBrowserGlobals: true,
-      enableJsx: true,
+      shouldIncludeBrowserGlobals: true,
+      shouldEnableJsx: true,
       settings: {
         react: {
           version: 'detect',

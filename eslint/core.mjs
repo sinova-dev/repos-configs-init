@@ -59,7 +59,7 @@ export function createCoreRecommendedConfigs() {
  * @param {object} [options]
  * @param {Record<string, boolean>} [options.extraGlobals] - Extra globals to merge in
  * @param {boolean} [options.shouldIncludeBrowserGlobals]
- * @param {boolean} [options.enableJsx]
+ * @param {boolean} [options.shouldEnableJsx]
  * @param {import('eslint').Linter.Config['settings']} [options.settings]
  * @param {import('eslint').Linter.Config['plugins']} [options.plugins]
  * @param {import('eslint').Linter.Config['rules']} [options.rules]
@@ -70,7 +70,7 @@ export function createCoreRulesConfig(configDir, options = {}) {
   const {
     extraGlobals = {},
     shouldIncludeBrowserGlobals = false,
-    enableJsx: shouldEnableJsx = false,
+    shouldEnableJsx = false,
     settings: extraSettings = {},
     plugins: extraPlugins = {},
     rules: extraRules = {},

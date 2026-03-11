@@ -15,8 +15,8 @@ export const createFrontendBaseConfig = (configDir) => {
     ...createCoreRecommendedConfigs(),
 
     ...createCoreRulesConfig(configDir, {
-      includeBrowserGlobals: true,
-      enableJsx: true,
+      shouldIncludeBrowserGlobals: true,
+      shouldEnableJsx: true,
     }),
   );
 };
