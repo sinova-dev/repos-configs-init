@@ -6,6 +6,7 @@ import merge from 'lodash.merge';
 
 import { requiredPlugins } from './prettier-config.js';
 import { runWhenMain } from './helpers/run-when-main.mjs';
+import { appendCommentedOutContent } from './helpers/comment-out-content.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -25,13 +26,7 @@ export default resolveConfig({
 `;
 
   if (existingConfig) {
-    return `${baseConfig}
-
-// Previous configuration (commented out):
-${existingConfig
-  .split('\n')
-  .map((line) => `// ${line}`)
-  .join('\n')}`;
+    return appendCommentedOutContent(baseConfig, existingConfig);
   }
 
   return baseConfig;
