@@ -67,12 +67,6 @@ export const createConfig = (configDir) => {
         'import/no-default-export': 'off',
       },
     },
-    {
-      files: ['src/lib/db/**/*.{js,ts}'],
-      rules: {
-        'react/no-is-mounted': 'off',
-      },
-    },
 
     // Additional ignores for Next.js projects
     ...createTailConfigs({ extraIgnores: nextJsExtraIgnores }),
