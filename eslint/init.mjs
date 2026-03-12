@@ -126,7 +126,7 @@ export async function setupEslint() {
       {
         type: 'list',
         name: 'stack',
-        message: 'Frontend or Backend?',
+        message: 'What type of project would you like to configure? (Frontend or Backend)',
         choices: [
           { name: 'Frontend', value: PRESET.FRONTEND },
           { name: 'Backend', value: PRESET.BACKEND },
@@ -148,7 +148,10 @@ export async function setupEslint() {
       {
         type: 'list',
         name: 'preset',
-        message: stack === PRESET.FRONTEND ? 'Which frontend preset?' : 'Which backend preset?',
+        message:
+          stack === PRESET.FRONTEND
+            ? 'Which frontend preset would you like to use for ESLint?'
+            : 'Which backend preset would you like to use for ESLint?',
         default: stack === PRESET.FRONTEND ? PRESET.NEXTJS : PRESET.NESTJS,
         choices: stack === PRESET.FRONTEND ? frontendPresets : backendPresets,
       },
@@ -160,7 +163,7 @@ export async function setupEslint() {
         {
           type: 'list',
           name: 'orm',
-          message: 'Which ORM?',
+          message: 'Would you like to include an ORM in your ESLint configuration?',
           default: ORM.NONE,
           choices: [
             { name: 'No ORM', value: ORM.NONE },

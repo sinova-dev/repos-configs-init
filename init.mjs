@@ -11,7 +11,7 @@ async function main() {
     {
       type: 'confirm',
       name: 'shouldInstallAll',
-      message: 'Install all required development tools?',
+      message: 'Would you like to install all recommended development tools (Prettier, ESLint, and Husky)?',
       default: true,
     },
   ]);
@@ -28,19 +28,19 @@ async function main() {
     {
       type: 'confirm',
       name: 'shouldSetupPrettier',
-      message: 'Set up Prettier configuration?',
+      message: 'Would you like to configure Prettier for code formatting?',
       default: true,
     },
     {
       type: 'confirm',
       name: 'shouldSetupEslint',
-      message: 'Set up ESLint configuration?',
+      message: 'Would you like to configure ESLint for linting?',
       default: true,
     },
     {
       type: 'confirm',
       name: 'shouldSetupHusky',
-      message: 'Set up Husky with pre-commit hooks?',
+      message: 'Would you like to set up Husky with pre-commit hooks for automated checks?',
       default: true,
     },
   ]);
