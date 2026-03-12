@@ -29,7 +29,35 @@ const PRESET = Object.freeze({
 
 const MJS_CONFIG_PRESETS = new Set([PRESET.BACKEND, PRESET.NESTJS]);
 
-/** All known ESLint config filenames (flat + legacy). Generated config replaces any of these. */
+const STACK_PRESET_CONFIG = Object.freeze({
+  [PRESET.FRONTEND]: {
+    displayName: 'Frontend',
+    message: 'Which frontend preset would you like to use for ESLint?',
+    choices: [
+      { name: 'Next.js', value: PRESET.NEXTJS },
+      { name: 'React', value: PRESET.REACT },
+      { name: 'Basic Frontend', value: PRESET.FRONTEND },
+    ],
+    default: PRESET.FRONTEND,
+    shouldShowOrmPrompt: false,
+  },
+  [PRESET.BACKEND]: {
+    displayName: 'Backend',
+    message: 'Which backend preset would you like to use for ESLint?',
+    choices: [
+      { name: 'NestJS', value: PRESET.NESTJS },
+      { name: 'Basic Backend', value: PRESET.BACKEND },
+    ],
+    default: PRESET.BACKEND,
+    shouldShowOrmPrompt: true,
+  },
+});
+
+const STACK_CHOICES = Object.entries(STACK_PRESET_CONFIG).map(([value, { displayName }]) => ({
+  name: displayName,
+  value,
+}));
+
 const ESLINT_CONFIG_FILENAMES = [
   'eslint.config.js',
   'eslint.config.mjs',
@@ -122,38 +150,23 @@ export async function setupEslint() {
         type: 'list',
         name: 'stack',
         message: 'What type of project would you like to configure? (Frontend or Backend)',
-        choices: [
-          { name: 'Frontend', value: PRESET.FRONTEND },
-          { name: 'Backend', value: PRESET.BACKEND },
-        ],
+        choices: STACK_CHOICES,
       },
     ]);
 
-    const frontendPresets = [
-      { name: 'Next.js', value: PRESET.NEXTJS },
-      { name: 'React', value: PRESET.REACT },
-      { name: 'Basic Frontend', value: PRESET.FRONTEND },
-    ];
-    const backendPresets = [
-      { name: 'NestJS', value: PRESET.NESTJS },
-      { name: 'Basic Backend', value: PRESET.BACKEND },
-    ];
-
+    const stackConfig = STACK_PRESET_CONFIG[stack];
     const { preset: chosenPreset } = await inquirer.prompt([
       {
         type: 'list',
         name: 'preset',
-        message:
-          stack === PRESET.FRONTEND
-            ? 'Which frontend preset would you like to use for ESLint?'
-            : 'Which backend preset would you like to use for ESLint?',
-        default: stack === PRESET.FRONTEND ? PRESET.NEXTJS : PRESET.NESTJS,
-        choices: stack === PRESET.FRONTEND ? frontendPresets : backendPresets,
+        message: stackConfig.message,
+        default: stackConfig.default,
+        choices: stackConfig.choices,
       },
     ]);
     preset = chosenPreset;
 
-    if (stack === PRESET.BACKEND) {
+    if (stackConfig.shouldShowOrmPrompt) {
       const { orm: chosenOrm } = await inquirer.prompt([
         {
           type: 'list',
