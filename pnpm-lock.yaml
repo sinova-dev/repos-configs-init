@@ -80,9 +80,6 @@ importers:
       inquirer:
         specifier: ^9.0.0
         version: 9.3.7
-      lint-staged:
-        specifier: '>=15.0.0'
-        version: 16.1.2
       lodash.merge:
         specifier: ^4.6.2
         version: 4.6.2
@@ -102,6 +99,9 @@ importers:
       '@release-it/conventional-changelog':
         specifier: ^10.0.1
         version: 10.0.1(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.2.0)(release-it@19.0.4)
+      lint-staged:
+        specifier: '>=15.0.0'
+        version: 16.1.2
       release-it:
         specifier: ^19.0.4
         version: 19.0.4
