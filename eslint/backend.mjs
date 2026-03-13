@@ -1,16 +1,13 @@
 import { defineConfig } from 'eslint/config';
 
 import { createCoreRecommendedConfigs, createCoreRulesConfig, createTailConfigs } from './core.mjs';
-import { getPrismaConfig } from './orm-prisma.mjs';
+import { ORM, getOrmConfig } from './orm-registry.mjs';
 
 const backendIgnores = [];
 
-export const ORM = Object.freeze({ NONE: 'none', PRISMA: 'prisma' });
-
 /**
- * @typedef {'none' | 'prisma'} OrmOption
  * @typedef {import('eslint').Linter.RulesRecord} OrmRuleOverrides
- * @typedef {{ orm?: OrmOption, ormRuleOverrides?: OrmRuleOverrides }} BackendConfigOptions
+ * @typedef {{ orm?: string, ormRuleOverrides?: OrmRuleOverrides }} BackendConfigOptions
  */
 
 /**
@@ -19,18 +16,14 @@ export const ORM = Object.freeze({ NONE: 'none', PRISMA: 'prisma' });
  *
  * @param {string} configDir - The directory of the config file (project root)
  * @param {BackendConfigOptions} [options]
- * @param {OrmOption} [options.orm='none'] - ORM to add rules for ('prisma' uses eslint-config-prisma)
+ * @param {string} [options.orm='none'] - ORM to add rules for (e.g. 'prisma', 'drizzle')
  * @param {OrmRuleOverrides} [options.ormRuleOverrides] - Override ORM rules (e.g. { 'prefer-arrow/prefer-arrow-functions': 'off' })
  * @returns {import('eslint').Linter.Config[]}
  */
 export const createConfig = (configDir, options = {}) => {
   const { orm = ORM.NONE, ormRuleOverrides = {} } = options;
 
-  let ormConfigs = [];
-
-  if (orm === ORM.PRISMA) {
-    ormConfigs = getPrismaConfig(ormRuleOverrides);
-  }
+  const ormConfigs = getOrmConfig(orm, ormRuleOverrides);
 
   return defineConfig(
     ...createCoreRecommendedConfigs(),

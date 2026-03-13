@@ -7,7 +7,7 @@ import inquirer from 'inquirer';
 
 import { runWhenMain } from '../helpers/run-when-main.mjs';
 import { appendCommentedOutContent } from '../helpers/comment-out-content.mjs';
-import { ORM } from './backend.mjs';
+import { ORM, ORM_CHOICES, isOrmSupported } from './orm-registry.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -28,6 +28,7 @@ const PRESET = Object.freeze({
 });
 
 const MJS_CONFIG_PRESETS = new Set([PRESET.BACKEND, PRESET.NESTJS]);
+const PRESETS_WITH_ORM = new Set([PRESET.BACKEND, PRESET.NESTJS]);
 
 const STACK_PRESET_CONFIG = Object.freeze({
   [PRESET.FRONTEND]: {
@@ -107,8 +108,8 @@ function getConfigImportPath(packageName, preset) {
 
 function generateConfigContent({ packageName, preset, orm = ORM.NONE, existingConfig = null }) {
   const configPath = getConfigImportPath(packageName, preset);
-  const useOrmOption = orm === ORM.PRISMA && (preset === PRESET.BACKEND || preset === PRESET.NESTJS);
-  const configArg = useOrmOption ? `process.cwd(), { orm: '${ORM.PRISMA}' }` : 'process.cwd()';
+  const useOrmOption = isOrmSupported(orm) && PRESETS_WITH_ORM.has(preset);
+  const configArg = useOrmOption ? `process.cwd(), { orm: '${orm}' }` : 'process.cwd()';
 
   const baseConfig = `import { createConfig } from '${configPath}';
 
@@ -173,10 +174,7 @@ export async function setupEslint() {
           name: 'orm',
           message: 'Would you like to include an ORM in your ESLint configuration?',
           default: ORM.NONE,
-          choices: [
-            { name: 'No ORM', value: ORM.NONE },
-            { name: 'Prisma', value: ORM.PRISMA },
-          ],
+          choices: ORM_CHOICES,
         },
       ]);
       orm = chosenOrm;

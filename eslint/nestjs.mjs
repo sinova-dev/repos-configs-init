@@ -4,9 +4,8 @@ import { defineConfig } from 'eslint/config';
 import { createConfig as createBackendConfig } from './backend.mjs';
 
 /**
- * @typedef {'none' | 'prisma'} OrmOption
  * @typedef {import('eslint').Linter.RulesRecord} OrmRuleOverrides
- * @typedef {{ orm?: OrmOption, ormRuleOverrides?: OrmRuleOverrides }} NestjsConfigOptions
+ * @typedef {{ orm?: string, ormRuleOverrides?: OrmRuleOverrides }} NestjsConfigOptions
  */
 
 /**
@@ -15,7 +14,7 @@ import { createConfig as createBackendConfig } from './backend.mjs';
  *
  * @param {string} configDir - The directory of the config file (project root)
  * @param {NestjsConfigOptions} [options]
- * @param {OrmOption} [options.orm='none'] - ORM to add rules for (passed to backend config)
+ * @param {string} [options.orm='none'] - ORM to add rules for (passed to backend config)
  * @param {OrmRuleOverrides} [options.ormRuleOverrides] - Override ORM rules (passed to backend config)
  * @returns {import('eslint').Linter.Config[]}
  */
