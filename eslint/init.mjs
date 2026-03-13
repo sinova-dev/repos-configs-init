@@ -4,6 +4,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import merge from 'lodash.merge';
 import inquirer from 'inquirer';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 
 import { runWhenMain } from '../helpers/run-when-main.mjs';
 import { appendCommentedOutContent } from '../helpers/comment-out-content.mjs';
@@ -128,24 +130,56 @@ function handleError(message, err) {
   process.exit(1);
 }
 
+function parseCliArgs() {
+  const argv = yargs(hideBin(process.argv))
+    .option('backend', {
+      type: 'boolean',
+      describe: 'Use backend preset',
+    })
+    .option('nestjs', {
+      type: 'boolean',
+      describe: 'Use NestJS preset',
+    })
+    .option('frontend', {
+      type: 'boolean',
+      describe: 'Use frontend preset',
+    })
+    .option('nextjs', {
+      type: 'boolean',
+      describe: 'Use Next.js preset',
+    })
+    .option('react', {
+      type: 'boolean',
+      describe: 'Use React preset',
+    })
+    .option('orm', {
+      type: 'string',
+      choices: Object.values(ORM),
+      default: ORM.NONE,
+      describe: 'ORM to include (backend/nestjs only)',
+    })
+    .help()
+    .parse();
+
+  const preset =
+    (argv.backend && PRESET.BACKEND) ||
+    (argv.nestjs && PRESET.NESTJS) ||
+    (argv.frontend && PRESET.FRONTEND) ||
+    (argv.nextjs && PRESET.NEXTJS) ||
+    (argv.react && PRESET.REACT) ||
+    null;
+
+  return { preset, orm: argv.orm };
+}
+
 export async function setupEslint() {
   console.log(`\n📐 Setting up ESLint with ${packageJson.name} config...`);
 
-  const args = new Set(process.argv.slice(2));
-  let preset;
-  let orm = ORM.NONE;
+  const { preset: presetFromCli, orm: ormFromCli } = parseCliArgs();
+  let preset = presetFromCli;
+  let orm = ormFromCli;
 
-  if (args.has('--backend')) {
-    preset = PRESET.BACKEND;
-  } else if (args.has('--nestjs')) {
-    preset = PRESET.NESTJS;
-  } else if (args.has('--frontend')) {
-    preset = PRESET.FRONTEND;
-  } else if (args.has('--nextjs')) {
-    preset = PRESET.NEXTJS;
-  } else if (args.has('--react')) {
-    preset = PRESET.REACT;
-  } else {
+  if (!preset) {
     const { stack } = await inquirer.prompt([
       {
         type: 'list',
