@@ -138,13 +138,6 @@ export const createConfig = (configDir) => {
       },
     },
     {
-      files: ['.prettierrc.mjs'],
-      rules: {
-        'import/no-default-export': 'off',
-      },
-      extends: [tseslint.configs.disableTypeChecked],
-    },
-    {
       files: ['src/components/ui/**/*.{jsx,tsx}'],
       rules: {
         'react/require-default-props': 'off',
