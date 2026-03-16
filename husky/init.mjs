@@ -4,8 +4,16 @@ import path from 'path';
 import merge from 'lodash.merge';
 import { runWhenMain } from '../helpers/run-when-main.mjs';
 
+const HUSKY_DIR = '.husky';
+const PRE_COMMIT_HOOK_FILENAME = 'pre-commit';
+const SCRIPT_PRE_COMMIT = 'pre-commit';
+const PRE_COMMIT_SCRIPT_CMD =
+  'pnpm install && git add pnpm-lock.yaml && pnpm lint-staged --allow-empty && tsc --noEmit';
+const LINT_STAGED_PRETTIER_GLOB = '**/*';
+const LINT_STAGED_PRETTIER_CMD = 'prettier --write --ignore-unknown';
+
 const baseConfig = {
-  '**/*': 'prettier --write --ignore-unknown',
+  [LINT_STAGED_PRETTIER_GLOB]: LINT_STAGED_PRETTIER_CMD,
 };
 
 const requiredDependencies = ['husky', 'lint-staged'];
@@ -28,9 +36,9 @@ export async function setupHusky() {
     console.log('🔧 Initializing Husky...');
     execSync('npx husky init', { stdio: 'inherit' });
 
-    const huskyDir = path.join(projectRoot, '.husky');
-    const preCommitHookPath = path.join(huskyDir, 'pre-commit');
-    const preCommitContent = `pnpm run pre-commit`;
+    const huskyDir = path.join(projectRoot, HUSKY_DIR);
+    const preCommitHookPath = path.join(huskyDir, PRE_COMMIT_HOOK_FILENAME);
+    const preCommitContent = `pnpm run ${SCRIPT_PRE_COMMIT}`;
 
     await fs.writeFile(preCommitHookPath, preCommitContent);
     console.info('✅ Pre-commit hook updated');
@@ -39,7 +47,7 @@ export async function setupHusky() {
     const targetPackageJson = JSON.parse(await fs.readFile(targetPackageJsonPath, 'utf-8'));
 
     const huskyScripts = {
-      'pre-commit': 'pnpm install && git add pnpm-lock.yaml && pnpm lint-staged --allow-empty && tsc --noEmit',
+      [SCRIPT_PRE_COMMIT]: PRE_COMMIT_SCRIPT_CMD,
     };
 
     if (!targetPackageJson.scripts) {

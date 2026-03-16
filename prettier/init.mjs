@@ -14,8 +14,16 @@ const packageJsonPath = path.join(__dirname, '../package.json');
 const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
 
 const projectRoot = process.cwd();
-const prettierConfigPath = path.join(projectRoot, '.prettierrc.mjs');
-const prettierIgnorePath = path.join(projectRoot, '.prettierignore');
+
+const PRETTIER_CONFIG_FILENAME = '.prettierrc.mjs';
+const PRETTIER_IGNORE_FILENAME = '.prettierignore';
+const SCRIPT_FORMAT = 'format';
+const SCRIPT_FORMAT_CHECK = 'format:check';
+const FORMAT_SCRIPT_WRITE = 'prettier . --write --log-level=warn';
+const FORMAT_SCRIPT_CHECK = 'prettier . --check --log-level=warn';
+
+const prettierConfigPath = path.join(projectRoot, PRETTIER_CONFIG_FILENAME);
+const prettierIgnorePath = path.join(projectRoot, PRETTIER_IGNORE_FILENAME);
 
 function generateConfigContent(packageName, existingConfig = null) {
   const baseConfig = `import { resolveConfig } from '${packageName}/prettier-config';
@@ -52,12 +60,12 @@ export async function setupPrettier() {
     const existingConfig = await fs.readFile(prettierConfigPath, 'utf-8');
     const configContent = generateConfigContent(packageJson.name, existingConfig);
     await fs.writeFile(prettierConfigPath, configContent);
-    console.info('✅ .prettierrc.mjs updated with new config (previous config commented out).');
+    console.info(`✅ ${PRETTIER_CONFIG_FILENAME} updated with new config (previous config commented out).`);
   } catch (err) {
     if (err.code === 'ENOENT') {
       const configContent = generateConfigContent(packageJson.name);
       await fs.writeFile(prettierConfigPath, configContent);
-      console.info('✅ .prettierrc.mjs created.');
+      console.info(`✅ ${PRETTIER_CONFIG_FILENAME} created.`);
     } else {
       handleError('Error handling config file', err);
     }
@@ -69,8 +77,8 @@ export async function setupPrettier() {
     const targetPackageJson = JSON.parse(await fs.readFile(targetPackageJsonPath, 'utf-8'));
 
     const formatScripts = {
-      format: 'prettier . --write --log-level=warn',
-      'format:check': 'prettier . --check --log-level=warn',
+      [SCRIPT_FORMAT]: FORMAT_SCRIPT_WRITE,
+      [SCRIPT_FORMAT_CHECK]: FORMAT_SCRIPT_CHECK,
     };
 
     if (!targetPackageJson.scripts) {
@@ -87,7 +95,7 @@ export async function setupPrettier() {
 
   try {
     await fs.access(prettierIgnorePath);
-    console.info('✅ .prettierignore already exists');
+    console.info(`✅ ${PRETTIER_IGNORE_FILENAME} already exists`);
   } catch (err) {
     if (err.code === 'ENOENT') {
       const prettierIgnoreContent = `.git
@@ -99,9 +107,9 @@ pnpm-lock.yaml
 .idea
 `;
       await fs.writeFile(prettierIgnorePath, prettierIgnoreContent);
-      console.info('✅ .prettierignore created');
+      console.info(`✅ ${PRETTIER_IGNORE_FILENAME} created`);
     } else {
-      handleError('Error checking .prettierignore', err);
+      handleError(`Error checking ${PRETTIER_IGNORE_FILENAME}`, err);
     }
   }
 }
