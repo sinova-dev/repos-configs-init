@@ -9,6 +9,7 @@ import { hideBin } from 'yargs/helpers';
 
 import { runWhenMain } from '../helpers/run-when-main.mjs';
 import { appendCommentedOutContent } from '../helpers/comment-out-content.mjs';
+import { removeOtherConfigs } from '../helpers/remove-other-configs.mjs';
 import { ORM, ORM_CHOICES, isOrmSupported } from './orm/orm-registry.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -82,20 +83,6 @@ const SCRIPT_LINT_FIX = 'lint:fix';
 function getEslintConfigPath(preset) {
   const filename = MJS_CONFIG_PRESETS.has(preset) ? ESLINT_CONFIG_MJS : ESLINT_CONFIG_JS;
   return path.join(projectRoot, filename);
-}
-
-async function removeOtherEslintConfigs(keepPath) {
-  const keepFilename = path.basename(keepPath);
-  for (const name of ESLINT_CONFIG_FILENAMES) {
-    if (name === keepFilename) continue;
-    const filePath = path.join(projectRoot, name);
-    try {
-      await fs.unlink(filePath);
-      console.info(`✅ Removed existing ${name}`);
-    } catch (err) {
-      if (err.code !== 'ENOENT') throw err;
-    }
-  }
 }
 
 function getConfigImportPath(packageName, preset) {
@@ -260,7 +247,7 @@ export async function setupEslint() {
   const configFilename = path.basename(eslintConfigPath);
 
   try {
-    await removeOtherEslintConfigs(eslintConfigPath);
+    await removeOtherConfigs(eslintConfigPath, ESLINT_CONFIG_FILENAMES, projectRoot);
 
     let existingConfig;
     try {

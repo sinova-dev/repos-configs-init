@@ -7,6 +7,7 @@ import merge from 'lodash.merge';
 import { requiredPlugins } from './index.mjs';
 import { runWhenMain } from '../helpers/run-when-main.mjs';
 import { appendCommentedOutContent } from '../helpers/comment-out-content.mjs';
+import { removeOtherConfigs } from '../helpers/remove-other-configs.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -17,6 +18,20 @@ const projectRoot = process.cwd();
 
 const PRETTIER_CONFIG_FILENAME = '.prettierrc.mjs';
 const PRETTIER_IGNORE_FILENAME = '.prettierignore';
+
+const PRETTIER_CONFIG_FILENAMES = [
+  PRETTIER_CONFIG_FILENAME,
+  '.prettierrc',
+  '.prettierrc.json',
+  '.prettierrc.yaml',
+  '.prettierrc.yml',
+  '.prettierrc.js',
+  '.prettierrc.cjs',
+  'prettier.config.js',
+  'prettier.config.cjs',
+  'prettier.config.mjs',
+];
+
 const SCRIPT_FORMAT = 'format';
 const SCRIPT_FORMAT_CHECK = 'format:check';
 const FORMAT_SCRIPT_WRITE = 'prettier . --write --log-level=warn';
@@ -60,21 +75,28 @@ export async function setupPrettier() {
   }
 
   try {
-    const existingConfig = await fs.readFile(prettierConfigPath, 'utf-8');
+    await removeOtherConfigs(prettierConfigPath, PRETTIER_CONFIG_FILENAMES, projectRoot);
+
+    let existingConfig;
+    try {
+      existingConfig = await fs.readFile(prettierConfigPath, 'utf-8');
+    } catch (error) {
+      if (error.code === 'ENOENT') existingConfig = null;
+      else throw error;
+    }
+
     const configContent = generateConfigContent({
       packageName: packageJson.name,
       existingConfig,
     });
     await fs.writeFile(prettierConfigPath, configContent);
-    console.info(`✅ ${PRETTIER_CONFIG_FILENAME} updated with new config (previous config commented out).`);
+    console.info(
+      existingConfig
+        ? `✅ ${PRETTIER_CONFIG_FILENAME} updated with new config (previous config commented out).`
+        : `✅ ${PRETTIER_CONFIG_FILENAME} created.`,
+    );
   } catch (err) {
-    if (err.code === 'ENOENT') {
-      const configContent = generateConfigContent({ packageName: packageJson.name });
-      await fs.writeFile(prettierConfigPath, configContent);
-      console.info(`✅ ${PRETTIER_CONFIG_FILENAME} created.`);
-    } else {
-      handleError('Error handling config file', err);
-    }
+    handleError('Error handling config file', err);
   }
 
   const targetPackageJsonPath = path.join(projectRoot, 'package.json');
