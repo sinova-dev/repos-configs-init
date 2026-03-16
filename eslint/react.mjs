@@ -28,7 +28,6 @@ const reactIgnores = ['global.d.ts', 'tailwind.config.ts', 'playwright.config.ts
  */
 export const createConfig = (configDir, options = {}) => {
   const { storybook: includeStorybook = false } = options;
-  const rootDir = path.resolve(configDir);
 
   return defineConfig(
     ...createFrontendBaseConfig(configDir),
