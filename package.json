@@ -5,13 +5,13 @@
   "type": "module",
   "exports": {
     "./prettier-config": "./prettier-config.js",
-    "./eslint-config/core": "./eslint/core.mjs",
-    "./eslint-config/frontend": "./eslint/frontend.mjs",
-    "./eslint-config/react": "./eslint/react.mjs",
-    "./eslint-config/nextjs": "./eslint/nextjs.mjs",
-    "./eslint-config/backend": "./eslint/backend.mjs",
-    "./eslint-config/nestjs": "./eslint/nestjs.mjs",
-    "./eslint-config/orm-prisma": "./eslint/orm-prisma.mjs"
+    "./eslint-config/core": "./eslint/core/index.mjs",
+    "./eslint-config/frontend": "./eslint/frontend/index.mjs",
+    "./eslint-config/react": "./eslint/frontend/react.mjs",
+    "./eslint-config/nextjs": "./eslint/frontend/nextjs.mjs",
+    "./eslint-config/backend": "./eslint/backend/index.mjs",
+    "./eslint-config/nestjs": "./eslint/backend/nestjs.mjs",
+    "./eslint-config/orm-prisma": "./eslint/orm/orm-prisma.mjs"
   },
   "license": "MIT",
   "scripts": {

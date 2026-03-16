@@ -1,7 +1,3 @@
-import path from 'node:path';
-
-import { FlatCompat } from '@eslint/eslintrc';
-import js from '@eslint/js';
 import checkFile from 'eslint-plugin-check-file';
 import i18next from 'eslint-plugin-i18next';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
@@ -13,8 +9,8 @@ import storybook from 'eslint-plugin-storybook';
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
-import { createFrontendBaseConfig } from './frontend.mjs';
-import { createCoreRulesConfig, createTailConfigs } from './core.mjs';
+import { createFrontendBaseConfig } from './index.mjs';
+import { createCoreRulesConfig, createTailConfigs } from '../core/index.mjs';
 
 const reactIgnores = ['global.d.ts', 'tailwind.config.ts', 'playwright.config.ts', 'out/**'];
 

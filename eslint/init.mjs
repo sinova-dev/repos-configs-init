@@ -9,7 +9,7 @@ import { hideBin } from 'yargs/helpers';
 
 import { runWhenMain } from '../helpers/run-when-main.mjs';
 import { appendCommentedOutContent } from '../helpers/comment-out-content.mjs';
-import { ORM, ORM_CHOICES, isOrmSupported } from './orm-registry.mjs';
+import { ORM, ORM_CHOICES, isOrmSupported } from './orm/orm-registry.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

@@ -1,7 +1,7 @@
 import { defineConfig } from 'eslint/config';
 
-import { createCoreRecommendedConfigs, createCoreRulesConfig, createTailConfigs } from './core.mjs';
-import { ORM, getOrmConfig } from './orm-registry.mjs';
+import { createCoreRecommendedConfigs, createCoreRulesConfig, createTailConfigs } from '../core/index.mjs';
+import { ORM, getOrmConfig } from '../orm/orm-registry.mjs';
 
 const backendIgnores = [];
 
