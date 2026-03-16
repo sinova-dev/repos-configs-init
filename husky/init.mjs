@@ -35,15 +35,24 @@ export async function setupHusky() {
 
     console.log('🔧 Initializing Husky...');
     execSync('npx husky init', { stdio: 'inherit' });
+  } catch (err) {
+    handleError('Failed to install Husky or run husky init', err);
+  }
 
+  try {
     const huskyDir = path.join(projectRoot, HUSKY_DIR);
     const preCommitHookPath = path.join(huskyDir, PRE_COMMIT_HOOK_FILENAME);
     const preCommitContent = `pnpm run ${SCRIPT_PRE_COMMIT}`;
 
     await fs.writeFile(preCommitHookPath, preCommitContent);
     console.info('✅ Pre-commit hook updated');
+  } catch (err) {
+    handleError('Error writing pre-commit hook file', err);
+  }
 
-    const targetPackageJsonPath = path.join(projectRoot, 'package.json');
+  const targetPackageJsonPath = path.join(projectRoot, 'package.json');
+
+  try {
     const targetPackageJson = JSON.parse(await fs.readFile(targetPackageJsonPath, 'utf-8'));
 
     const huskyScripts = {
@@ -65,7 +74,7 @@ export async function setupHusky() {
     await fs.writeFile(targetPackageJsonPath, JSON.stringify(targetPackageJson, null, 2) + '\n');
     console.info('✅ Pre-commit script and lint-staged config added to package.json');
   } catch (err) {
-    handleError('Error setting up Husky', err);
+    handleError('Error updating package.json scripts', err);
   }
 }
 
