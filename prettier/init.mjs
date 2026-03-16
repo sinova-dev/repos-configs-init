@@ -25,7 +25,10 @@ const FORMAT_SCRIPT_CHECK = 'prettier . --check --log-level=warn';
 const prettierConfigPath = path.join(projectRoot, PRETTIER_CONFIG_FILENAME);
 const prettierIgnorePath = path.join(projectRoot, PRETTIER_IGNORE_FILENAME);
 
-function generateConfigContent(packageName, existingConfig = null) {
+/**
+ * @param {{ packageName: string, existingConfig?: string | null }} options
+ */
+function generateConfigContent({ packageName, existingConfig = null }) {
   const baseConfig = `import { resolveConfig } from '${packageName}/prettier-config';
 
 export default resolveConfig({
@@ -58,12 +61,15 @@ export async function setupPrettier() {
 
   try {
     const existingConfig = await fs.readFile(prettierConfigPath, 'utf-8');
-    const configContent = generateConfigContent(packageJson.name, existingConfig);
+    const configContent = generateConfigContent({
+      packageName: packageJson.name,
+      existingConfig,
+    });
     await fs.writeFile(prettierConfigPath, configContent);
     console.info(`✅ ${PRETTIER_CONFIG_FILENAME} updated with new config (previous config commented out).`);
   } catch (err) {
     if (err.code === 'ENOENT') {
-      const configContent = generateConfigContent(packageJson.name);
+      const configContent = generateConfigContent({ packageName: packageJson.name });
       await fs.writeFile(prettierConfigPath, configContent);
       console.info(`✅ ${PRETTIER_CONFIG_FILENAME} created.`);
     } else {
