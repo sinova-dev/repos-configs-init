@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import { execSync } from 'child_process';
 import path from 'path';
 import merge from 'lodash.merge';
-import { runWhenMain } from './helpers/run-when-main.mjs';
+import { runWhenMain } from '../helpers/run-when-main.mjs';
 
 const baseConfig = {
   '**/*': 'prettier --write --ignore-unknown',

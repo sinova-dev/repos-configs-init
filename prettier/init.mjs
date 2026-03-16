@@ -4,13 +4,13 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import merge from 'lodash.merge';
 
-import { requiredPlugins } from './prettier-config.js';
-import { runWhenMain } from './helpers/run-when-main.mjs';
-import { appendCommentedOutContent } from './helpers/comment-out-content.mjs';
+import { requiredPlugins } from './index.mjs';
+import { runWhenMain } from '../helpers/run-when-main.mjs';
+import { appendCommentedOutContent } from '../helpers/comment-out-content.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const packageJsonPath = path.join(__dirname, 'package.json');
+const packageJsonPath = path.join(__dirname, '../package.json');
 const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
 
 const projectRoot = process.cwd();
