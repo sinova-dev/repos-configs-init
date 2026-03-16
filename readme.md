@@ -49,8 +49,8 @@ Flat configs for frontend (React, Next.js) and backend (Node/TS, NestJS) project
 
 - Shared **core** rules (TypeScript strict + stylistic, imports, Unicorn, JSDoc, erasable-syntax-only, etc.)
 - **Frontend** preset: generic browser/JSX (core + browser globals, no React/Next)
-- **React** preset: extends Frontend + React, React Hooks, Storybook, Playwright, i18next, check-file, JSX a11y
-- **Next.js** preset: extends React + `@next/eslint-plugin-next`, App Router conventions (_eslint-plugin-tailwindcss disabled: TODO re-enable when it supports Tailwind CSS v4_)
+- **React** preset: extends Frontend + React, React Hooks, Playwright, i18next, check-file, JSX a11y. Optional **Storybook** plugin and rules via `storybook: true` (default: false)
+- **Next.js** preset: extends React + `@next/eslint-plugin-next`, App Router conventions. Optional Storybook via `storybook: true` (default: false). (_eslint-plugin-tailwindcss disabled: TODO re-enable when it supports Tailwind CSS v4_)
 - **Backend** preset: generic Node/TS backend (core only, no framework plugins). Optional **Prisma** ORM rules via `orm: 'prisma'`
 - **NestJS** preset: extends Backend + `@darraghor/eslint-plugin-nestjs-typed`. Optional **Prisma** ORM rules via `orm: 'prisma'`
 
@@ -60,7 +60,7 @@ Flat configs for frontend (React, Next.js) and backend (Node/TS, NestJS) project
 npx sinova-eslint-init
 ```
 
-When run interactively, you choose frontend/backend, then preset (Next.js, React, Frontend, NestJS, Backend). For backend or NestJS you can optionally choose Prisma to add `@v2nic/eslint-plugin-prisma` rules (schema + TypeScript).
+When run interactively, you choose frontend/backend, then preset (Next.js, React, Frontend, NestJS, Backend). For React or Next.js you can optionally include Storybook rules (or use `--storybook` with `--react`/`--nextjs`). For backend or NestJS you can optionally choose Prisma to add `@v2nic/eslint-plugin-prisma` rules (schema + TypeScript).
 
 **Install ESLint only (choose preset):**
 
@@ -69,7 +69,15 @@ npx sinova-eslint-init --nextjs
 ```
 
 ```bash
+npx sinova-eslint-init --nextjs --storybook
+```
+
+```bash
 npx sinova-eslint-init --react
+```
+
+```bash
+npx sinova-eslint-init --react --storybook
 ```
 
 ```bash
@@ -93,6 +101,15 @@ import { createConfig } from '@sinova-development/repos-configs/eslint-config/ne
 export default [...createConfig(process.cwd())];
 ```
 
+**Use config directly (Next.js with Storybook):**
+
+```javascript
+// eslint.config.js
+import { createConfig } from '@sinova-development/repos-configs/eslint-config/nextjs';
+
+export default [...createConfig(process.cwd(), { storybook: true })];
+```
+
 **Use config directly (React):**
 
 ```javascript
@@ -100,6 +117,15 @@ export default [...createConfig(process.cwd())];
 import { createConfig } from '@sinova-development/repos-configs/eslint-config/react';
 
 export default [...createConfig(process.cwd())];
+```
+
+**Use config directly (React with Storybook):**
+
+```javascript
+// eslint.config.js
+import { createConfig } from '@sinova-development/repos-configs/eslint-config/react';
+
+export default [...createConfig(process.cwd(), { storybook: true })];
 ```
 
 **Use config directly (frontend):**

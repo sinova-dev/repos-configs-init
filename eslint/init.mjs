@@ -31,6 +31,7 @@ const PRESET = Object.freeze({
 
 const MJS_CONFIG_PRESETS = new Set([PRESET.BACKEND, PRESET.NESTJS]);
 const PRESETS_WITH_ORM = new Set([PRESET.BACKEND, PRESET.NESTJS]);
+const PRESETS_WITH_STORYBOOK = new Set([PRESET.REACT, PRESET.NEXTJS]);
 
 const STACK_PRESET_CONFIG = Object.freeze({
   [PRESET.FRONTEND]: {
@@ -108,10 +109,22 @@ function getConfigImportPath(packageName, preset) {
   return pathMap[preset] ?? `${packageName}/eslint-config/nextjs`;
 }
 
-function generateConfigContent({ packageName, preset, orm = ORM.NONE, existingConfig = null }) {
+function generateConfigContent({
+  packageName,
+  preset,
+  orm = ORM.NONE,
+  storybook: includeStorybook = false,
+  existingConfig = null,
+}) {
   const configPath = getConfigImportPath(packageName, preset);
-  const useOrmOption = isOrmSupported(orm) && PRESETS_WITH_ORM.has(preset);
-  const configArg = useOrmOption ? `process.cwd(), { orm: '${orm}' }` : 'process.cwd()';
+  const options = {};
+  if (isOrmSupported(orm) && PRESETS_WITH_ORM.has(preset)) {
+    options.orm = orm;
+  }
+  if (PRESETS_WITH_STORYBOOK.has(preset) && includeStorybook) {
+    options.storybook = true;
+  }
+  const configArg = Object.keys(options).length > 0 ? `process.cwd(), ${JSON.stringify(options)}` : 'process.cwd()';
 
   const baseConfig = `import { createConfig } from '${configPath}';
 
@@ -158,6 +171,11 @@ function parseCliArgs() {
       default: ORM.NONE,
       describe: 'ORM to include (backend/nestjs only)',
     })
+    .option('storybook', {
+      type: 'boolean',
+      default: null,
+      describe: 'Include Storybook plugin and rules (react/nextjs only). Omit to prompt.',
+    })
     .help()
     .parse();
 
@@ -169,15 +187,16 @@ function parseCliArgs() {
     (argv.react && PRESET.REACT) ||
     null;
 
-  return { preset, orm: argv.orm };
+  return { preset, orm: argv.orm, storybook: argv.storybook };
 }
 
 export async function setupEslint() {
   console.log(`\n📐 Setting up ESLint with ${packageJson.name} config...`);
 
-  const { preset: presetFromCli, orm: ormFromCli } = parseCliArgs();
+  const { preset: presetFromCli, orm: ormFromCli, storybook: storybookFromCli } = parseCliArgs();
   let preset = presetFromCli;
   let orm = ormFromCli;
+  let storybook = storybookFromCli;
 
   if (!preset) {
     const { stack } = await inquirer.prompt([
@@ -213,6 +232,20 @@ export async function setupEslint() {
       ]);
       orm = chosenOrm;
     }
+
+    if (PRESETS_WITH_STORYBOOK.has(preset) && storybook === null) {
+      const { storybook: chosenStorybook } = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'storybook',
+          message: 'Include Storybook ESLint rules?',
+          default: false,
+        },
+      ]);
+      storybook = chosenStorybook;
+    }
+  } else if (PRESETS_WITH_STORYBOOK.has(preset) && storybook === null) {
+    storybook = false;
   }
 
   try {
@@ -241,6 +274,7 @@ export async function setupEslint() {
       packageName: packageJson.name,
       preset,
       orm,
+      storybook: storybook ?? false,
       existingConfig,
     });
     await fs.writeFile(eslintConfigPath, configContent);

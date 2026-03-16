@@ -20,17 +20,15 @@ const reactIgnores = ['global.d.ts', 'tailwind.config.ts', 'playwright.config.ts
 
 /**
  * Creates the ESLint flat config for React (non-Next.js) frontend projects.
- * Extends the generic frontend config and adds React, Storybook, i18next, Playwright, check-file.
+ * Extends the generic frontend config and adds React, Storybook (optional), i18next, Playwright, check-file.
  *
  * @param {string} configDir - The directory of the config file (project root)
+ * @param {{ storybook?: boolean }} [options] - Options. storybook: include Storybook plugin and rules (default: false)
  * @returns {import('eslint').Linter.Config[]}
  */
-export const createConfig = (configDir) => {
+export const createConfig = (configDir, options = {}) => {
+  const { storybook: includeStorybook = false } = options;
   const rootDir = path.resolve(configDir);
-  const compat = new FlatCompat({
-    baseDirectory: rootDir,
-    recommendedConfig: js.configs.recommended,
-  });
 
   return defineConfig(
     ...createFrontendBaseConfig(configDir),
@@ -39,7 +37,7 @@ export const createConfig = (configDir) => {
     reactPlugin.configs.flat.recommended,
     jsxA11y.flatConfigs.strict,
 
-    storybook.configs['flat/recommended'],
+    ...(includeStorybook ? [storybook.configs['flat/recommended']] : []),
     i18next.configs['flat/recommended'],
     playwright.configs['flat/recommended'],
 
@@ -110,27 +108,31 @@ export const createConfig = (configDir) => {
     }),
 
     // File-specific overrides (React)
-    {
-      files: ['**/*.stories.*'],
-      rules: {
-        'react/jsx-key': 'off',
-        'i18next/no-literal-string': 'off',
-      },
-    },
-    {
-      files: ['**/*.stories.*', '**/*.config.*', '.storybook/**/*'],
-      rules: {
-        'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
-        'import/no-default-export': 'off',
-      },
-    },
-    {
-      files: ['src/decorators/*'],
-      rules: {
-        'react/display-name': 'off',
-        'react/destructuring-assignment': 'off',
-      },
-    },
+    ...(includeStorybook
+      ? [
+          {
+            files: ['**/*.stories.*'],
+            rules: {
+              'react/jsx-key': 'off',
+              'i18next/no-literal-string': 'off',
+            },
+          },
+          {
+            files: ['**/*.stories.*', '**/*.config.*', '.storybook/**/*', 'src/decorators/**/*'],
+            rules: {
+              'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+              'import/no-default-export': 'off',
+            },
+          },
+          {
+            files: ['**/decorators/**/*', '.storybook/**/*'],
+            rules: {
+              'react/display-name': 'off',
+              'react/destructuring-assignment': 'off',
+            },
+          },
+        ]
+      : []),
     {
       files: ['*.js'],
       rules: {

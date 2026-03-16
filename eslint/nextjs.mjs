@@ -26,9 +26,10 @@ const nextJsAppRouterFiles = [
  * Extends the React config and adds Next.js plugin and App Router conventions.
  *
  * @param {string} configDir - The directory of the config file (project root)
+ * @param {{ storybook?: boolean }} [options] - Options. storybook: include Storybook plugin and rules (default: false)
  * @returns {import('eslint').Linter.Config[]}
  */
-export const createConfig = (configDir) => {
+export const createConfig = (configDir, options = {}) => {
   const rootDir = path.resolve(configDir);
   const compat = new FlatCompat({
     baseDirectory: rootDir,
@@ -36,7 +37,7 @@ export const createConfig = (configDir) => {
   });
 
   return defineConfig(
-    ...createReactConfig(configDir),
+    ...createReactConfig(configDir, options),
 
     // Next.js recommended rules
     ...compat.extends('plugin:@next/next/recommended'),
