@@ -74,21 +74,15 @@ importers:
       globals:
         specifier: ^16.4.0
         version: 16.5.0
-      husky:
-        specifier: '>=9.1.7'
-        version: 9.1.7
       inquirer:
         specifier: ^9.0.0
         version: 9.3.7
+      lint-staged:
+        specifier: '>=15.0.0'
+        version: 16.1.2
       lodash.merge:
         specifier: ^4.6.2
         version: 4.6.2
-      prettier:
-        specifier: '>=3.0.0'
-        version: 3.6.2
-      prettier-plugin-tailwindcss:
-        specifier: '>=0.6.10'
-        version: 0.6.14(prettier@3.6.2)
       typescript-eslint:
         specifier: ^8.0.0
         version: 8.55.0(eslint@9.39.2(jiti@2.4.2))(typescript@5.9.3)
@@ -99,9 +93,15 @@ importers:
       '@release-it/conventional-changelog':
         specifier: ^10.0.1
         version: 10.0.1(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.2.0)(release-it@19.0.4)
-      lint-staged:
-        specifier: '>=15.0.0'
-        version: 16.1.2
+      husky:
+        specifier: ^9.1.7
+        version: 9.1.7
+      prettier:
+        specifier: '>=3.0.0'
+        version: 3.6.2
+      prettier-plugin-tailwindcss:
+        specifier: '>=0.6.10'
+        version: 0.6.14(prettier@3.6.2)
       release-it:
         specifier: ^19.0.4
         version: 19.0.4
