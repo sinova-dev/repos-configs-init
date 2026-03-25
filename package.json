@@ -5,6 +5,14 @@
   "type": "module",
   "exports": {
     "./prettier-config": "./prettier/index.mjs",
+    "./tsconfig/core/base.json": "./tsconfig/core/base.json",
+    "./tsconfig/backend/index.json": "./tsconfig/backend/index.json",
+    "./tsconfig/frontend/index.json": "./tsconfig/frontend/index.json",
+    "./tsconfig/frontend/next.json": "./tsconfig/frontend/next.json",
+    "./tsconfig/base.json": "./tsconfig/core/base.json",
+    "./tsconfig/backend.json": "./tsconfig/backend/index.json",
+    "./tsconfig/frontend.json": "./tsconfig/frontend/index.json",
+    "./tsconfig/next.json": "./tsconfig/frontend/next.json",
     "./eslint-config/core": "./eslint/core/index.mjs",
     "./eslint-config/frontend": "./eslint/frontend/index.mjs",
     "./eslint-config/react": "./eslint/frontend/react.mjs",
@@ -24,7 +32,8 @@
     "sinova-general-config-init": "./init.mjs",
     "sinova-prettier-init": "./prettier/init.mjs",
     "sinova-eslint-init": "./eslint/init.mjs",
-    "sinova-husky-init": "./husky/init.mjs"
+    "sinova-husky-init": "./husky/init.mjs",
+    "sinova-tsconfig-init": "./tsconfig/init.mjs"
   },
   "dependencies": {
     "@darraghor/eslint-plugin-nestjs-typed": "^7.1.21",
@@ -65,7 +74,8 @@
     "husky": ">=9.1.7",
     "lint-staged": ">=15.0.0",
     "prettier": ">=3.0.0",
-    "prettier-plugin-tailwindcss": ">=0.6.10"
+    "prettier-plugin-tailwindcss": ">=0.6.10",
+    "typescript": ">=5.0.0"
   },
   "publishConfig": {
     "access": "public"

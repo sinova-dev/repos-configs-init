@@ -10,7 +10,7 @@ pnpm add -D @sinova-development/repos-configs
 
 ## Quick Setup
 
-For basic setup of all tools, run:
+For basic setup of all tools (Prettier, ESLint, Husky, and tsconfig), run:
 
 ```bash
 npx sinova-general-config-init
@@ -202,11 +202,69 @@ npx sinova-husky-init
 
 > When using `sinova-eslint-init`, the ESLint lint-staged rule is added automatically.
 
+### TypeScript Configuration (tsconfig)
+
+Shared tsconfig presets for backend and frontend projects, intended to be used with `extends`.
+
+**Available presets:**
+
+- `backend` - Node.js/NestJS defaults (`module: NodeNext`, `moduleResolution: NodeNext`, `types: ["node"]`)
+- `frontend` - React/Vite defaults (`moduleResolution: Bundler`, `jsx: react-jsx`, DOM libs)
+- `next` - extends frontend and adds TypeScript Next plugin (`"plugins": [{ "name": "next" }]`)
+
+**Install tsconfig only:**
+
+```bash
+npx sinova-tsconfig-init
+```
+
+```bash
+npx sinova-tsconfig-init --backend
+```
+
+```bash
+npx sinova-tsconfig-init --frontend
+```
+
+```bash
+npx sinova-tsconfig-init --next
+```
+
+This setup installs `typescript`, writes `tsconfig.json` with an `extends`, and adds:
+
+- `type-check` → `tsc --noEmit`
+- `type-check:watch` → `tsc --noEmit --watch`
+
+**Use backend preset directly (tsconfig.json):**
+
+```json
+{
+  "extends": "@sinova-development/repos-configs/tsconfig/backend/index.json"
+}
+```
+
+**Use frontend preset directly (tsconfig.json):**
+
+```json
+{
+  "extends": "@sinova-development/repos-configs/tsconfig/frontend/index.json"
+}
+```
+
+**Use Next.js frontend preset directly (tsconfig.json):**
+
+```json
+{
+  "extends": "@sinova-development/repos-configs/tsconfig/frontend/next.json"
+}
+```
+
 ## Scripts
 
 When using `sinova-eslint-init`, the following are added or updated in `package.json`:
 
 - **Lint scripts:** `lint` and `lint:fix` (e.g. `eslint . --max-warnings=0 --cache` and same with `--fix`)
 - **Lint-staged:** `**/*.{js,jsx,ts,tsx,mjs,cjs}` → `eslint`
+- **Type-check scripts:** `type-check` and `type-check:watch` (from `sinova-tsconfig-init`)
 
 Other scripts (e.g. `format`, `format:check`, `pre-commit`) come from the general setup or your project.
