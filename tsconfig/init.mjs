@@ -46,10 +46,6 @@ const BASE_CONFIG_TEMPLATE = (extendsPath) => `{
 
 const NEXT_CONFIG_TEMPLATE = (extendsPath) => `{
   "extends": "${extendsPath}",
-  "compilerOptions": {
-    "plugins": [{ "name": "next" }]
-    // optionally override shared compiler options here
-  },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules", ".next"]
 }
@@ -64,7 +60,7 @@ function getExtendsPath(packageName, preset) {
     [PRESET.BACKEND]: `${packageName}/tsconfig/backend/index.json`,
     [PRESET.FRONTEND]: `${packageName}/tsconfig/frontend/index.json`,
     [PRESET.REACT]: `${packageName}/tsconfig/frontend/react.json`,
-    [PRESET.NEXT]: `${packageName}/tsconfig/frontend/react.json`,
+    [PRESET.NEXT]: `${packageName}/tsconfig/frontend/next.json`,
   };
   return extendsPathMap[preset] ?? extendsPathMap[PRESET.BACKEND];
 }
