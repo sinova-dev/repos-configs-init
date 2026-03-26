@@ -3,6 +3,9 @@
   "compilerOptions": {
     "target": "ESNext",
     "strict": true,
+    "incremental": true,
+    "strictNullChecks": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,

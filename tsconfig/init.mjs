@@ -49,7 +49,7 @@ const NEXT_CONFIG_TEMPLATE = (extendsPath) => `{
     // optionally override shared compiler options here
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", ".next"]
 }
 `;
 
