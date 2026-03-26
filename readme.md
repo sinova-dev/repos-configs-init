@@ -209,8 +209,9 @@ Shared tsconfig presets for backend and frontend projects, intended to be used w
 **Available presets:**
 
 - `backend` - Node.js/NestJS defaults (`module: NodeNext`, `moduleResolution: NodeNext`, `types: ["node"]`)
-- `frontend` - React/Vite defaults (`moduleResolution: Bundler`, `jsx: react-jsx`, DOM libs)
-- `next` - uses the frontend preset and generates local Next.js-specific config (`"plugins": [{ "name": "next" }]`, `include`, `exclude`)
+- `frontend` - basic frontend defaults (`moduleResolution: Bundler`, DOM libs)
+- `react` - extends `frontend` and enables React JSX transform (`jsx: react-jsx`)
+- `next` - extends `react` and is used with local Next.js additions from generator (`"plugins": [{ "name": "next" }]`, `include`, `exclude`)
 
 **Install tsconfig only:**
 
@@ -224,6 +225,10 @@ npx sinova-tsconfig-init --backend
 
 ```bash
 npx sinova-tsconfig-init --frontend
+```
+
+```bash
+npx sinova-tsconfig-init --react
 ```
 
 ```bash
@@ -251,16 +256,24 @@ This setup installs `typescript`, writes `tsconfig.json` with an `extends`, and 
 }
 ```
 
+**Use React preset directly (tsconfig.json):**
+
+```json
+{
+  "extends": "@sinova-development/repos-configs/tsconfig/frontend/react.json"
+}
+```
+
 **Use Next.js config via generator (`--next`) output (tsconfig.json):**
 
 ```json
 {
-  "extends": "@sinova-development/repos-configs/tsconfig/frontend/index.json",
+  "extends": "@sinova-development/repos-configs/tsconfig/frontend/react.json",
   "compilerOptions": {
     "plugins": [{ "name": "next" }]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", ".next"]
 }
 ```
 

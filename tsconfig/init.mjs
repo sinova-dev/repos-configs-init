@@ -20,12 +20,14 @@ const projectRoot = process.cwd();
 const PRESET = Object.freeze({
   BACKEND: 'backend',
   FRONTEND: 'frontend',
+  REACT: 'react',
   NEXT: 'next',
 });
 
 const PRESET_CHOICES = Object.freeze([
   { name: 'Backend', value: PRESET.BACKEND },
   { name: 'Basic Frontend', value: PRESET.FRONTEND },
+  { name: 'React', value: PRESET.REACT },
   { name: 'Next.js', value: PRESET.NEXT },
 ]);
 
@@ -61,7 +63,8 @@ function getExtendsPath(packageName, preset) {
   const extendsPathMap = {
     [PRESET.BACKEND]: `${packageName}/tsconfig/backend/index.json`,
     [PRESET.FRONTEND]: `${packageName}/tsconfig/frontend/index.json`,
-    [PRESET.NEXT]: `${packageName}/tsconfig/frontend/index.json`,
+    [PRESET.REACT]: `${packageName}/tsconfig/frontend/react.json`,
+    [PRESET.NEXT]: `${packageName}/tsconfig/frontend/react.json`,
   };
   return extendsPathMap[preset] ?? extendsPathMap[PRESET.BACKEND];
 }
@@ -97,24 +100,30 @@ function parseCliArgs() {
     })
     .option('frontend', {
       type: 'boolean',
-      describe: 'Use frontend tsconfig preset',
+      describe: 'Use basic frontend tsconfig preset',
+    })
+    .option('react', {
+      type: 'boolean',
+      describe: 'Use React tsconfig preset',
     })
     .option('next', {
       type: 'boolean',
-      describe: 'Use frontend Next.js tsconfig preset',
+      describe: 'Use Next.js tsconfig preset',
     })
     .option('nextjs', {
       type: 'boolean',
       describe: 'Alias for --next',
     })
-    .conflicts('backend', ['frontend', 'next', 'nextjs'])
-    .conflicts('frontend', ['next', 'nextjs'])
+    .conflicts('backend', ['frontend', 'react', 'next', 'nextjs'])
+    .conflicts('frontend', ['react', 'next', 'nextjs'])
+    .conflicts('react', ['next', 'nextjs'])
     .help()
     .parse();
 
   const preset =
     (argv.backend && PRESET.BACKEND) ||
     (argv.frontend && PRESET.FRONTEND) ||
+    (argv.react && PRESET.REACT) ||
     ((argv.next || argv.nextjs) && PRESET.NEXT) ||
     null;
 
