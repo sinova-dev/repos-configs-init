@@ -34,6 +34,25 @@ const SCRIPT_TYPE_CHECK_WATCH = 'type-check:watch';
 const TYPE_CHECK_SCRIPT_CMD = 'tsc --noEmit';
 const TYPE_CHECK_WATCH_SCRIPT_CMD = 'tsc --noEmit --watch';
 
+const BASE_CONFIG_TEMPLATE = (extendsPath) => `{
+  "extends": "${extendsPath}",
+  "compilerOptions": {
+    // optionally override shared compiler options here
+  }
+}
+`;
+
+const NEXT_CONFIG_TEMPLATE = (extendsPath) => `{
+  "extends": "${extendsPath}",
+  "compilerOptions": {
+    "plugins": [{ "name": "next" }]
+    // optionally override shared compiler options here
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
+`;
+
 const TSCONFIG_FILENAME = 'tsconfig.json';
 const tsconfigPath = path.join(projectRoot, TSCONFIG_FILENAME);
 const requiredDependencies = [packageJson.name, 'typescript'];
@@ -42,7 +61,7 @@ function getExtendsPath(packageName, preset) {
   const extendsPathMap = {
     [PRESET.BACKEND]: `${packageName}/tsconfig/backend/index.json`,
     [PRESET.FRONTEND]: `${packageName}/tsconfig/frontend/index.json`,
-    [PRESET.NEXT]: `${packageName}/tsconfig/frontend/next.json`,
+    [PRESET.NEXT]: `${packageName}/tsconfig/frontend/index.json`,
   };
   return extendsPathMap[preset] ?? extendsPathMap[PRESET.BACKEND];
 }
@@ -51,13 +70,17 @@ function getExtendsPath(packageName, preset) {
  * @param {{ packageName: string, preset: string, existingConfig?: string | null }} options
  */
 function generateConfigContent({ packageName, preset, existingConfig = null }) {
-  const baseConfig = `{
-  "extends": "${getExtendsPath(packageName, preset)}",
-  "compilerOptions": {
-    // optionally override shared compiler options here
+  const extendsPath = getExtendsPath(packageName, preset);
+  let baseConfig;
+
+  switch (preset) {
+    case PRESET.NEXT:
+      baseConfig = NEXT_CONFIG_TEMPLATE(extendsPath);
+      break;
+    default:
+      baseConfig = BASE_CONFIG_TEMPLATE(extendsPath);
+      break;
   }
-}
-`;
 
   if (existingConfig) {
     return appendCommentedOutContent(baseConfig, existingConfig, 'Previous tsconfig (commented out):');
