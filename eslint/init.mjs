@@ -39,9 +39,9 @@ const STACK_PRESET_CONFIG = Object.freeze({
     displayName: 'Frontend',
     message: 'Which frontend preset would you like to use for ESLint?',
     choices: [
-      { name: 'Next.js', value: PRESET.NEXTJS },
-      { name: 'React', value: PRESET.REACT },
       { name: 'Basic Frontend', value: PRESET.FRONTEND },
+      { name: 'React', value: PRESET.REACT },
+      { name: 'Next.js', value: PRESET.NEXTJS },
     ],
     default: PRESET.FRONTEND,
     shouldShowOrmPrompt: false,
@@ -50,8 +50,8 @@ const STACK_PRESET_CONFIG = Object.freeze({
     displayName: 'Backend',
     message: 'Which backend preset would you like to use for ESLint?',
     choices: [
-      { name: 'NestJS', value: PRESET.NESTJS },
       { name: 'Basic Backend', value: PRESET.BACKEND },
+      { name: 'NestJS', value: PRESET.NESTJS },
     ],
     default: PRESET.BACKEND,
     shouldShowOrmPrompt: true,
@@ -192,6 +192,7 @@ export async function setupEslint() {
         name: 'stack',
         message: 'What type of project would you like to configure? (Frontend or Backend)',
         choices: STACK_CHOICES,
+        default: PRESET.FRONTEND,
       },
     ]);
 
