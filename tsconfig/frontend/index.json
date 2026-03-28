@@ -1,0 +1,7 @@
+{
+  "extends": "../core/base.json",
+  "compilerOptions": {
+    "moduleResolution": "Bundler",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"]
+  }
+}

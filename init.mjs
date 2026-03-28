@@ -3,6 +3,7 @@ import inquirer from 'inquirer';
 import { setupPrettier } from './prettier/init.mjs';
 import { setupHusky } from './husky/init.mjs';
 import { setupEslint } from './eslint/init.mjs';
+import { setupTsconfig } from './tsconfig/init.mjs';
 
 async function main() {
   console.log('🚀 Initializing development tools...');
@@ -11,7 +12,7 @@ async function main() {
     {
       type: 'confirm',
       name: 'shouldInstallAll',
-      message: 'Would you like to install all recommended development tools (Prettier, ESLint, and Husky)?',
+      message: 'Would you like to install all recommended development tools (Prettier, ESLint, Husky, and tsconfig)?',
       default: true,
     },
   ]);
@@ -20,11 +21,12 @@ async function main() {
     await setupPrettier();
     await setupEslint();
     await setupHusky();
+    await setupTsconfig();
     console.info('✨ All done!');
     return;
   }
 
-  const { shouldSetupPrettier, shouldSetupEslint, shouldSetupHusky } = await inquirer.prompt([
+  const { shouldSetupPrettier, shouldSetupEslint, shouldSetupHusky, shouldSetupTsconfig } = await inquirer.prompt([
     {
       type: 'confirm',
       name: 'shouldSetupPrettier',
@@ -43,6 +45,12 @@ async function main() {
       message: 'Would you like to set up Husky with pre-commit hooks for automated checks?',
       default: true,
     },
+    {
+      type: 'confirm',
+      name: 'shouldSetupTsconfig',
+      message: 'Would you like to set up a shared TypeScript config (tsconfig) preset?',
+      default: true,
+    },
   ]);
 
   if (shouldSetupPrettier) {
@@ -55,6 +63,10 @@ async function main() {
 
   if (shouldSetupHusky) {
     await setupHusky();
+  }
+
+  if (shouldSetupTsconfig) {
+    await setupTsconfig();
   }
 
   console.info('✨ All done!');
