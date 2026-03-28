@@ -3,8 +3,11 @@ import { execSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import merge from 'lodash.merge';
+import inquirer from 'inquirer';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 
-import { requiredPlugins } from './index.mjs';
+import { PRETTIER_PRESET, requiredPluginsByPreset } from './index.mjs';
 import { runWhenMain } from '../helpers/run-when-main.mjs';
 import { appendCommentedOutContent } from '../helpers/comment-out-content.mjs';
 import { removeOtherConfigs } from '../helpers/remove-other-configs.mjs';
@@ -41,12 +44,14 @@ const prettierConfigPath = path.join(projectRoot, PRETTIER_CONFIG_FILENAME);
 const prettierIgnorePath = path.join(projectRoot, PRETTIER_IGNORE_FILENAME);
 
 /**
- * @param {{ packageName: string, existingConfig?: string | null }} options
+ * @param {{ packageName: string, preset: string, existingConfig?: string | null }} options
  */
-function generateConfigContent({ packageName, existingConfig = null }) {
-  const baseConfig = `import { resolveConfig } from '${packageName}/prettier-config';
+function generateConfigContent({ packageName, preset, existingConfig = null }) {
+  const resolverName = preset === PRETTIER_PRESET.BACKEND ? 'resolveBackendConfig' : 'resolveConfig';
 
-export default resolveConfig({
+  const baseConfig = `import { ${resolverName} } from '${packageName}/prettier-config';
+
+export default ${resolverName}({
   // optionally override defaults here
 });
 `;
@@ -66,10 +71,41 @@ function handleError(message, err) {
 export async function setupPrettier() {
   console.log(`🧼 Setting up Prettier with ${packageJson.name} config...`);
 
+  const { preset } = await yargs(hideBin(process.argv))
+    .option('preset', {
+      type: 'string',
+      choices: Object.values(PRETTIER_PRESET),
+      description: 'Prettier preset to install (frontend enables Tailwind class sorting)',
+    })
+    .parse();
+
+  const selectedPreset =
+    preset ??
+    (
+      await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'preset',
+          message: 'Which Prettier preset would you like to use?',
+          choices: [
+            { name: 'Frontend (Tailwind)', value: PRETTIER_PRESET.FRONTEND },
+            { name: 'Backend (no Tailwind)', value: PRETTIER_PRESET.BACKEND },
+          ],
+          default: PRETTIER_PRESET.FRONTEND,
+        },
+      ])
+    ).preset;
+
   try {
-    const installCmd = `pnpm add -D ${requiredPlugins.join(' ')}`;
-    console.log(`📦 Running: ${installCmd}`);
-    execSync(installCmd, { stdio: 'inherit' });
+    const requiredPlugins =
+      requiredPluginsByPreset[selectedPreset] ?? requiredPluginsByPreset[PRETTIER_PRESET.FRONTEND];
+    if (requiredPlugins.length > 0) {
+      const installCmd = `pnpm add -D ${requiredPlugins.join(' ')}`;
+      console.log(`📦 Running: ${installCmd}`);
+      execSync(installCmd, { stdio: 'inherit' });
+    } else {
+      console.log('📦 No extra Prettier plugins to install for this preset.');
+    }
   } catch (err) {
     handleError('Failed to install plugins', err);
   }
@@ -87,6 +123,7 @@ export async function setupPrettier() {
 
     const configContent = generateConfigContent({
       packageName: packageJson.name,
+      preset: selectedPreset,
       existingConfig,
     });
     await fs.writeFile(prettierConfigPath, configContent);
