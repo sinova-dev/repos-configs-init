@@ -15,7 +15,7 @@ import { createCoreRulesConfig, createTailConfigs } from '../core/index.mjs';
 const reactIgnores = ['global.d.ts', 'tailwind.config.ts', 'playwright.config.ts', 'out/**'];
 
 /**
- * Creates the ESLint flat config for React (non-Next.js) frontend projects.
+ * Creates the ESLint flat config for React frontend projects.
  * Extends the generic frontend config and adds React, Storybook (optional), i18next, Playwright, check-file.
  *
  * @param {string} configDir - The directory of the config file (project root)
