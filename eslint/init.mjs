@@ -250,7 +250,7 @@ export async function setupEslint() {
 
     let existingConfig;
     try {
-      existingConfig = fs.readFileSync(eslintConfigPath, 'utf-8');
+      existingConfig = await fs.readFile(eslintConfigPath, 'utf-8');
     } catch (error) {
       if (error.code === 'ENOENT') existingConfig = null;
       else throw error;
