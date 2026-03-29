@@ -88,8 +88,8 @@ export async function setupPrettier() {
           name: 'preset',
           message: 'Which Prettier preset would you like to use?',
           choices: [
-            { name: 'Frontend (Tailwind)', value: PRETTIER_PRESET.FRONTEND },
-            { name: 'Backend (no Tailwind)', value: PRETTIER_PRESET.BACKEND },
+            { name: 'Frontend', value: PRETTIER_PRESET.FRONTEND },
+            { name: 'Backend', value: PRETTIER_PRESET.BACKEND },
           ],
           default: PRETTIER_PRESET.FRONTEND,
         },
