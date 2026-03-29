@@ -47,11 +47,10 @@ const prettierIgnorePath = path.join(projectRoot, PRETTIER_IGNORE_FILENAME);
  * @param {{ packageName: string, preset: string, existingConfig?: string | null }} options
  */
 function generateConfigContent({ packageName, preset, existingConfig = null }) {
-  const resolverName = preset === PRETTIER_PRESET.BACKEND ? 'resolveBackendConfig' : 'resolveConfig';
+  const baseConfig = `import { resolveConfig } from '${packageName}/prettier-config';
 
-  const baseConfig = `import { ${resolverName} } from '${packageName}/prettier-config';
-
-export default ${resolverName}({
+export default resolveConfig({
+  preset: '${preset}',
   // optionally override defaults here
 });
 `;

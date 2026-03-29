@@ -19,14 +19,22 @@ export const requiredPluginsByPreset = Object.freeze({
   [PRETTIER_PRESET.BACKEND]: [],
 });
 
-export function resolveConfig(externalConfig = {}) {
-  const plugins = [...(externalConfig?.plugins ?? []), ...requiredPluginsByPreset[PRETTIER_PRESET.FRONTEND]];
-
-  return merge({}, baseConfig, externalConfig, { plugins });
+const VALID_PRESETS = new Set(Object.values(PRETTIER_PRESET));
+function isValidPreset(value) {
+  return typeof value === 'string' && VALID_PRESETS.has(value);
 }
 
-export function resolveBackendConfig(externalConfig = {}) {
-  const plugins = [...(externalConfig?.plugins ?? []), ...requiredPluginsByPreset[PRETTIER_PRESET.BACKEND]];
+function resolvePreset(explicitPreset) {
+  if (isValidPreset(explicitPreset)) {
+    return explicitPreset;
+  }
+  return PRETTIER_PRESET.BACKEND;
+}
 
-  return merge({}, baseConfig, externalConfig, { plugins });
+export function resolveConfig(externalConfig = {}) {
+  const { preset: explicitPreset, ...rest } = externalConfig;
+  const preset = resolvePreset(explicitPreset);
+  const plugins = [...(rest.plugins ?? []), ...requiredPluginsByPreset[preset]];
+
+  return merge({}, baseConfig, rest, { plugins });
 }
