@@ -2,7 +2,6 @@ import fs from 'fs/promises';
 import { execSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import merge from 'lodash.merge';
 import inquirer from 'inquirer';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
@@ -76,7 +75,6 @@ const ESLINT_CONFIG_FILENAMES = [
 ];
 
 const LINT_SCRIPT_BASE = 'eslint . --max-warnings=0 --cache';
-const LINT_STAGED_GLOB = '**/*.{js,jsx,ts,tsx,mjs,cjs}';
 const SCRIPT_LINT = 'lint';
 const SCRIPT_LINT_FIX = 'lint:fix';
 
@@ -309,15 +307,8 @@ export async function setupEslint() {
 
     targetPackageJson.scripts = newScripts;
 
-    if (!targetPackageJson['lint-staged']) {
-      targetPackageJson['lint-staged'] = {};
-    }
-    targetPackageJson['lint-staged'] = merge({}, targetPackageJson['lint-staged'], {
-      [LINT_STAGED_GLOB]: 'eslint',
-    });
-
     await fs.writeFile(targetPackageJsonPath, JSON.stringify(targetPackageJson, null, 2) + '\n');
-    console.info('✅ Lint scripts and lint-staged ESLint rule added to package.json');
+    console.info('✅ Lint scripts added to package.json');
   } catch (err) {
     handleError('Error updating package.json scripts', err);
   }

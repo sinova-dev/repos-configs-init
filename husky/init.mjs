@@ -11,9 +11,12 @@ const PRE_COMMIT_SCRIPT_CMD =
   'pnpm install && git add pnpm-lock.yaml && pnpm lint-staged --allow-empty && tsc --noEmit';
 const LINT_STAGED_PRETTIER_GLOB = '**/*';
 const LINT_STAGED_PRETTIER_CMD = 'prettier --write --ignore-unknown';
+const LINT_STAGED_ESLINT_GLOB = '**/*.{js,jsx,ts,tsx,mjs,cjs}';
+const LINT_STAGED_ESLINT_CMD = 'eslint';
 
 const baseConfig = {
   [LINT_STAGED_PRETTIER_GLOB]: LINT_STAGED_PRETTIER_CMD,
+  [LINT_STAGED_ESLINT_GLOB]: LINT_STAGED_ESLINT_CMD,
 };
 
 const requiredDependencies = ['husky', 'lint-staged'];
