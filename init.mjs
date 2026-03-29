@@ -1,12 +1,19 @@
 import inquirer from 'inquirer';
 
+import { resolveStack } from './helpers/project-stack.mjs';
 import { setupPrettier } from './prettier/init.mjs';
-import { setupHusky } from './husky/init.mjs';
 import { setupEslint } from './eslint/init.mjs';
 import { setupTsconfig } from './tsconfig/init.mjs';
+import { setupHusky } from './husky/init.mjs';
 
 async function main() {
   console.log('🚀 Initializing development tools...');
+
+  const packageManager = await resolvePackageManager();
+  console.log(`📦 Package manager: ${packageManager}`);
+
+  const stack = await resolveStack();
+  console.log(`🛠️ Project stack: ${stack}`);
 
   const { shouldInstallAll } = await inquirer.prompt([
     {
@@ -18,10 +25,10 @@ async function main() {
   ]);
 
   if (shouldInstallAll) {
-    await setupPrettier();
+    await setupPrettier({ stack });
     await setupEslint();
-    await setupHusky();
     await setupTsconfig();
+    await setupHusky();
     console.info('✨ All done!');
     return;
   }
@@ -54,19 +61,19 @@ async function main() {
   ]);
 
   if (shouldSetupPrettier) {
-    await setupPrettier();
+    await setupPrettier({ stack });
   }
 
   if (shouldSetupEslint) {
     await setupEslint();
   }
 
-  if (shouldSetupHusky) {
-    await setupHusky();
-  }
-
   if (shouldSetupTsconfig) {
     await setupTsconfig();
+  }
+
+  if (shouldSetupHusky) {
+    await setupHusky();
   }
 
   console.info('✨ All done!');

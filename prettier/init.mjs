@@ -2,7 +2,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import merge from 'lodash.merge';
-import inquirer from 'inquirer';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
@@ -10,6 +9,7 @@ import { PRETTIER_PRESET } from './index.mjs';
 import { runWhenMain } from '../helpers/run-when-main.mjs';
 import { appendCommentedOutContent } from '../helpers/comment-out-content.mjs';
 import { removeOtherConfigs } from '../helpers/remove-other-configs.mjs';
+import { resolveStack } from '../helpers/project-stack.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -66,33 +66,20 @@ function handleError(message, err) {
   process.exit(1);
 }
 
-export async function setupPrettier() {
+export async function setupPrettier(options = {}) {
   console.log(`🧼 Setting up Prettier with ${packageJson.name} config...`);
+
+  const { stack: stackHint } = options;
 
   const { preset } = await yargs(hideBin(process.argv))
     .option('preset', {
       type: 'string',
       choices: Object.values(PRETTIER_PRESET),
-      description: 'Prettier preset to install (frontend enables Tailwind class sorting)',
+      description: 'Prettier preset to install',
     })
     .parse();
 
-  const selectedPreset =
-    preset ??
-    (
-      await inquirer.prompt([
-        {
-          type: 'list',
-          name: 'preset',
-          message: 'Which Prettier preset would you like to use?',
-          choices: [
-            { name: 'Frontend', value: PRETTIER_PRESET.FRONTEND },
-            { name: 'Backend', value: PRETTIER_PRESET.BACKEND },
-          ],
-          default: PRETTIER_PRESET.FRONTEND,
-        },
-      ])
-    ).preset;
+  const selectedPreset = preset ?? stackHint ?? (await resolveStack());
 
   try {
     await removeOtherConfigs(prettierConfigPath, PRETTIER_CONFIG_FILENAMES, projectRoot);
