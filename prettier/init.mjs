@@ -1,5 +1,4 @@
 import fs from 'fs/promises';
-import { execSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import merge from 'lodash.merge';
@@ -7,7 +6,7 @@ import inquirer from 'inquirer';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-import { PRETTIER_PRESET, requiredPluginsByPreset } from './index.mjs';
+import { PRETTIER_PRESET } from './index.mjs';
 import { runWhenMain } from '../helpers/run-when-main.mjs';
 import { appendCommentedOutContent } from '../helpers/comment-out-content.mjs';
 import { removeOtherConfigs } from '../helpers/remove-other-configs.mjs';
@@ -36,8 +35,8 @@ const PRETTIER_CONFIG_FILENAMES = [
 ];
 
 const SCRIPT_FORMAT = 'format';
-const SCRIPT_FORMAT_CHECK = 'format:check';
 const FORMAT_SCRIPT_WRITE = 'prettier . --write --log-level=warn';
+const SCRIPT_FORMAT_CHECK = 'format:check';
 const FORMAT_SCRIPT_CHECK = 'prettier . --check --log-level=warn';
 
 const prettierConfigPath = path.join(projectRoot, PRETTIER_CONFIG_FILENAME);
@@ -94,20 +93,6 @@ export async function setupPrettier() {
         },
       ])
     ).preset;
-
-  try {
-    const requiredPlugins =
-      requiredPluginsByPreset[selectedPreset] ?? requiredPluginsByPreset[PRETTIER_PRESET.FRONTEND];
-    if (requiredPlugins.length > 0) {
-      const installCmd = `pnpm add -D ${requiredPlugins.join(' ')}`;
-      console.log(`📦 Running: ${installCmd}`);
-      execSync(installCmd, { stdio: 'inherit' });
-    } else {
-      console.log('📦 No extra Prettier plugins to install for this preset.');
-    }
-  } catch (err) {
-    handleError('Failed to install plugins', err);
-  }
 
   try {
     await removeOtherConfigs(prettierConfigPath, PRETTIER_CONFIG_FILENAMES, projectRoot);

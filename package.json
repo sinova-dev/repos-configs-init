@@ -34,7 +34,6 @@
     "@eslint-community/eslint-plugin-eslint-comments": "^4.5.0",
     "@eslint/js": "^9.35.0",
     "@next/eslint-plugin-next": "^15.5.4",
-    "eslint": "^9.35.0",
     "@v2nic/eslint-plugin-prisma": "^1.2.6",
     "eslint-config-prettier": "^10.1.0",
     "eslint-import-resolver-typescript": "^4.4.4",
@@ -54,20 +53,20 @@
     "inquirer": "^9.0.0",
     "yargs": "^18.0.0",
     "lodash.merge": "^4.6.2",
+    "prettier-plugin-tailwindcss": ">=0.6.10",
     "typescript-eslint": "^8.0.0"
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^10.0.1",
     "husky": "^9.1.7",
     "prettier": ">=3.0.0",
-    "prettier-plugin-tailwindcss": ">=0.6.10",
     "release-it": "^19.0.4"
   },
   "peerDependencies": {
+    "eslint": ">=9.0.0",
     "husky": ">=9.1.7",
     "lint-staged": ">=15.0.0",
     "prettier": ">=3.0.0",
-    "prettier-plugin-tailwindcss": ">=0.6.10",
     "typescript": ">=5.0.0"
   },
   "publishConfig": {

@@ -1,4 +1,5 @@
 import merge from 'lodash.merge';
+import * as tailwindPlugin from 'prettier-plugin-tailwindcss';
 
 export const baseConfig = {
   printWidth: 120,
@@ -12,10 +13,8 @@ export const PRETTIER_PRESET = Object.freeze({
   BACKEND: 'backend',
 });
 
-const TAILWIND_PLUGIN = 'prettier-plugin-tailwindcss';
-
 export const requiredPluginsByPreset = Object.freeze({
-  [PRETTIER_PRESET.FRONTEND]: [TAILWIND_PLUGIN],
+  [PRETTIER_PRESET.FRONTEND]: [tailwindPlugin],
   [PRETTIER_PRESET.BACKEND]: [],
 });
 
