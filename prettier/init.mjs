@@ -10,6 +10,7 @@ import { runWhenMain } from '../helpers/run-when-main.mjs';
 import { appendCommentedOutContent } from '../helpers/comment-out-content.mjs';
 import { removeOtherConfigs } from '../helpers/remove-other-configs.mjs';
 import { resolveStack } from '../helpers/project-stack.mjs';
+import { PRETTIER_CONFIG_FILENAMES } from './constants/config-filenames.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -20,19 +21,6 @@ const projectRoot = process.cwd();
 
 const PRETTIER_CONFIG_FILENAME = '.prettierrc.mjs';
 const PRETTIER_IGNORE_FILENAME = '.prettierignore';
-
-const PRETTIER_CONFIG_FILENAMES = [
-  PRETTIER_CONFIG_FILENAME,
-  '.prettierrc',
-  '.prettierrc.json',
-  '.prettierrc.yaml',
-  '.prettierrc.yml',
-  '.prettierrc.js',
-  '.prettierrc.cjs',
-  'prettier.config.js',
-  'prettier.config.cjs',
-  'prettier.config.mjs',
-];
 
 const SCRIPT_FORMAT = 'format';
 const FORMAT_SCRIPT_WRITE = 'prettier . --write --log-level=warn';
