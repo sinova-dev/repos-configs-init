@@ -18,7 +18,6 @@ const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
 
 const projectRoot = process.cwd();
 
-const ESLINT_CONFIG_JS = 'eslint.config.js';
 const ESLINT_CONFIG_MJS = 'eslint.config.mjs';
 
 const PRESET = Object.freeze({
@@ -29,7 +28,6 @@ const PRESET = Object.freeze({
   REACT: 'react',
 });
 
-const MJS_CONFIG_PRESETS = new Set([PRESET.BACKEND, PRESET.NESTJS]);
 const PRESETS_WITH_ORM = new Set([PRESET.BACKEND, PRESET.NESTJS]);
 const PRESETS_WITH_STORYBOOK = new Set([PRESET.REACT, PRESET.NEXTJS]);
 
@@ -78,9 +76,8 @@ const LINT_SCRIPT_BASE = 'eslint . --max-warnings=0 --cache';
 const SCRIPT_LINT = 'lint';
 const SCRIPT_LINT_FIX = 'lint:fix';
 
-function getEslintConfigPath(preset) {
-  const filename = MJS_CONFIG_PRESETS.has(preset) ? ESLINT_CONFIG_MJS : ESLINT_CONFIG_JS;
-  return path.join(projectRoot, filename);
+function getEslintConfigPath() {
+  return path.join(projectRoot, ESLINT_CONFIG_MJS);
 }
 
 function getConfigImportPath(packageName, preset) {
@@ -242,7 +239,7 @@ export async function setupEslint() {
     handleError('Failed to install config package', err);
   }
 
-  const eslintConfigPath = getEslintConfigPath(preset);
+  const eslintConfigPath = getEslintConfigPath();
   const configFilename = path.basename(eslintConfigPath);
 
   try {

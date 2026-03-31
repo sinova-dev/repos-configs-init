@@ -95,7 +95,7 @@ npx sinova-eslint-init --nestjs
 **Use config directly (Next.js):**
 
 ```javascript
-// eslint.config.js
+// eslint.config.mjs
 import { createConfig } from '@sinova-development/repos-configs/eslint-config/nextjs';
 
 export default [...createConfig(process.cwd())];
@@ -104,7 +104,7 @@ export default [...createConfig(process.cwd())];
 **Use config directly (Next.js with Storybook):**
 
 ```javascript
-// eslint.config.js
+// eslint.config.mjs
 import { createConfig } from '@sinova-development/repos-configs/eslint-config/nextjs';
 
 export default [...createConfig(process.cwd(), { storybook: true })];
@@ -113,7 +113,7 @@ export default [...createConfig(process.cwd(), { storybook: true })];
 **Use config directly (React):**
 
 ```javascript
-// eslint.config.js
+// eslint.config.mjs
 import { createConfig } from '@sinova-development/repos-configs/eslint-config/react';
 
 export default [...createConfig(process.cwd())];
@@ -122,7 +122,7 @@ export default [...createConfig(process.cwd())];
 **Use config directly (React with Storybook):**
 
 ```javascript
-// eslint.config.js
+// eslint.config.mjs
 import { createConfig } from '@sinova-development/repos-configs/eslint-config/react';
 
 export default [...createConfig(process.cwd(), { storybook: true })];
@@ -131,7 +131,7 @@ export default [...createConfig(process.cwd(), { storybook: true })];
 **Use config directly (frontend):**
 
 ```javascript
-// eslint.config.js
+// eslint.config.mjs
 import { createConfig } from '@sinova-development/repos-configs/eslint-config/frontend';
 
 export default [...createConfig(process.cwd())];
