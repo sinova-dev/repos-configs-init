@@ -11,6 +11,7 @@ const PRE_COMMIT_HOOK_FILENAME = 'pre-commit';
 const SCRIPT_PRE_COMMIT = 'pre-commit';
 const PRE_COMMIT_SCRIPT_CMD =
   'pnpm install && git add pnpm-lock.yaml && pnpm lint-staged --allow-empty && tsc --noEmit';
+const LINT_STAGED_CONFIG_FILENAME = '.lintstagedrc.json';
 const LINT_STAGED_PRETTIER_GLOB = '**/*';
 const LINT_STAGED_PRETTIER_CMD = 'prettier --write --ignore-unknown';
 const LINT_STAGED_ESLINT_GLOB = '**/*.{js,jsx,ts,tsx,mjs,cjs}';
@@ -94,6 +95,9 @@ export async function setupHusky() {
 
     targetPackageJson.scripts = merge({}, targetPackageJson.scripts, huskyScripts);
 
+    await fs.writeFile(targetPackageJsonPath, JSON.stringify(targetPackageJson, null, 2) + '\n');
+    console.info('✅ Pre-commit script added to package.json');
+
     const hasPrettier = await isPrettierConfigured(targetPackageJson);
     const hasEslint = await isEslintConfigured(targetPackageJson);
 
@@ -115,14 +119,15 @@ export async function setupHusky() {
       console.warn('  ⚠️  Neither Prettier nor ESLint detected — lint-staged will have no entries');
     }
 
-    if (!targetPackageJson['lint-staged']) {
-      targetPackageJson['lint-staged'] = {};
+    const lintStagedConfigPath = path.join(projectRoot, LINT_STAGED_CONFIG_FILENAME);
+    let existingLintStagedConfig = {};
+    if (await fileExists(lintStagedConfigPath)) {
+      existingLintStagedConfig = JSON.parse(await fs.readFile(lintStagedConfigPath, 'utf-8'));
     }
 
-    targetPackageJson['lint-staged'] = merge({}, lintStagedConfig, targetPackageJson['lint-staged']);
-
-    await fs.writeFile(targetPackageJsonPath, JSON.stringify(targetPackageJson, null, 2) + '\n');
-    console.info('✅ Pre-commit script and lint-staged config added to package.json');
+    const mergedLintStagedConfig = merge({}, lintStagedConfig, existingLintStagedConfig);
+    await fs.writeFile(lintStagedConfigPath, JSON.stringify(mergedLintStagedConfig, null, 2) + '\n');
+    console.info(`✅ lint-staged config written to ${LINT_STAGED_CONFIG_FILENAME}`);
   } catch (err) {
     handleError('Error updating package.json scripts', err);
   }
