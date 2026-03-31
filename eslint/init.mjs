@@ -10,6 +10,7 @@ import { runWhenMain } from '../helpers/run-when-main.mjs';
 import { appendCommentedOutContent } from '../helpers/comment-out-content.mjs';
 import { removeOtherConfigs } from '../helpers/remove-other-configs.mjs';
 import { ORM, ORM_CHOICES, isOrmSupported } from './orm/orm-registry.mjs';
+import { ESLINT_CONFIG_FILENAMES } from './constants/config-filenames.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -59,18 +60,6 @@ const STACK_CHOICES = Object.entries(STACK_PRESET_CONFIG).map(([value, { display
   name: displayName,
   value,
 }));
-
-const ESLINT_CONFIG_FILENAMES = [
-  'eslint.config.js',
-  'eslint.config.mjs',
-  'eslint.config.cjs',
-  '.eslintrc',
-  '.eslintrc.js',
-  '.eslintrc.cjs',
-  '.eslintrc.yaml',
-  '.eslintrc.yml',
-  '.eslintrc.json',
-];
 
 const LINT_SCRIPT_BASE = 'eslint . --max-warnings=0 --cache';
 const SCRIPT_LINT = 'lint';

@@ -3,6 +3,8 @@ import { execSync } from 'child_process';
 import path from 'path';
 import merge from 'lodash.merge';
 import { runWhenMain } from '../helpers/run-when-main.mjs';
+import { PRETTIER_CONFIG_FILENAMES } from '../prettier/constants/config-filenames.mjs';
+import { ESLINT_CONFIG_FILENAMES } from '../eslint/constants/config-filenames.mjs';
 
 const HUSKY_DIR = '.husky';
 const PRE_COMMIT_HOOK_FILENAME = 'pre-commit';
@@ -14,14 +16,38 @@ const LINT_STAGED_PRETTIER_CMD = 'prettier --write --ignore-unknown';
 const LINT_STAGED_ESLINT_GLOB = '**/*.{js,jsx,ts,tsx,mjs,cjs}';
 const LINT_STAGED_ESLINT_CMD = 'eslint';
 
-const baseConfig = {
-  [LINT_STAGED_PRETTIER_GLOB]: LINT_STAGED_PRETTIER_CMD,
-  [LINT_STAGED_ESLINT_GLOB]: LINT_STAGED_ESLINT_CMD,
-};
-
 const requiredDependencies = ['husky', 'lint-staged'];
 
 const projectRoot = process.cwd();
+
+async function fileExists(filePath) {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function hasDependency(pkgJson, depName) {
+  return Boolean(pkgJson.dependencies?.[depName] || pkgJson.devDependencies?.[depName]);
+}
+
+async function isPrettierConfigured(pkgJson) {
+  if (hasDependency(pkgJson, 'prettier') || pkgJson.prettier !== undefined) return true;
+  for (const filename of PRETTIER_CONFIG_FILENAMES) {
+    if (await fileExists(path.join(projectRoot, filename))) return true;
+  }
+  return false;
+}
+
+async function isEslintConfigured(pkgJson) {
+  if (hasDependency(pkgJson, 'eslint') || pkgJson.eslintConfig !== undefined) return true;
+  for (const filename of ESLINT_CONFIG_FILENAMES) {
+    if (await fileExists(path.join(projectRoot, filename))) return true;
+  }
+  return false;
+}
 
 function handleError(message, err) {
   console.error(`❌ ${message}:`, err.message);
@@ -68,11 +94,32 @@ export async function setupHusky() {
 
     targetPackageJson.scripts = merge({}, targetPackageJson.scripts, huskyScripts);
 
+    const hasPrettier = await isPrettierConfigured(targetPackageJson);
+    const hasEslint = await isEslintConfigured(targetPackageJson);
+
+    const lintStagedConfig = {};
+    if (hasPrettier) {
+      lintStagedConfig[LINT_STAGED_PRETTIER_GLOB] = LINT_STAGED_PRETTIER_CMD;
+      console.info('  ✅ Prettier detected — adding to lint-staged');
+    } else {
+      console.info('  ⏭️  Prettier not detected — skipping lint-staged entry');
+    }
+    if (hasEslint) {
+      lintStagedConfig[LINT_STAGED_ESLINT_GLOB] = LINT_STAGED_ESLINT_CMD;
+      console.info('  ✅ ESLint detected — adding to lint-staged');
+    } else {
+      console.info('  ⏭️  ESLint not detected — skipping lint-staged entry');
+    }
+
+    if (!hasPrettier && !hasEslint) {
+      console.warn('  ⚠️  Neither Prettier nor ESLint detected — lint-staged will have no entries');
+    }
+
     if (!targetPackageJson['lint-staged']) {
       targetPackageJson['lint-staged'] = {};
     }
 
-    targetPackageJson['lint-staged'] = merge({}, baseConfig, targetPackageJson['lint-staged']);
+    targetPackageJson['lint-staged'] = merge({}, lintStagedConfig, targetPackageJson['lint-staged']);
 
     await fs.writeFile(targetPackageJsonPath, JSON.stringify(targetPackageJson, null, 2) + '\n');
     console.info('✅ Pre-commit script and lint-staged config added to package.json');
