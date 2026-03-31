@@ -5,6 +5,7 @@ import merge from 'lodash.merge';
 import { runWhenMain } from '../helpers/run-when-main.mjs';
 import { PRETTIER_CONFIG_FILENAMES } from '../prettier/constants/config-filenames.mjs';
 import { ESLINT_CONFIG_FILENAMES } from '../eslint/constants/config-filenames.mjs';
+import { LINT_STAGED_CONFIG_FILENAMES } from './constants/lint-staged-config-filenames.mjs';
 
 const HUSKY_DIR = '.husky';
 const PRE_COMMIT_HOOK_FILENAME = 'pre-commit';
@@ -95,8 +96,21 @@ export async function setupHusky() {
 
     targetPackageJson.scripts = merge({}, targetPackageJson.scripts, huskyScripts);
 
+    if (targetPackageJson['lint-staged']) {
+      delete targetPackageJson['lint-staged'];
+      console.info('  🗑️  Removed old "lint-staged" key from package.json');
+    }
+
     await fs.writeFile(targetPackageJsonPath, JSON.stringify(targetPackageJson, null, 2) + '\n');
     console.info('✅ Pre-commit script added to package.json');
+
+    for (const oldConfigFile of LINT_STAGED_CONFIG_FILENAMES) {
+      const oldConfigPath = path.join(projectRoot, oldConfigFile);
+      if (await fileExists(oldConfigPath)) {
+        await fs.unlink(oldConfigPath);
+        console.info(`  🗑️  Removed old config: ${oldConfigFile}`);
+      }
+    }
 
     const hasPrettier = await isPrettierConfigured(targetPackageJson);
     const hasEslint = await isEslintConfigured(targetPackageJson);
@@ -120,13 +134,7 @@ export async function setupHusky() {
     }
 
     const lintStagedConfigPath = path.join(projectRoot, LINT_STAGED_CONFIG_FILENAME);
-    let existingLintStagedConfig = {};
-    if (await fileExists(lintStagedConfigPath)) {
-      existingLintStagedConfig = JSON.parse(await fs.readFile(lintStagedConfigPath, 'utf-8'));
-    }
-
-    const mergedLintStagedConfig = merge({}, lintStagedConfig, existingLintStagedConfig);
-    await fs.writeFile(lintStagedConfigPath, JSON.stringify(mergedLintStagedConfig, null, 2) + '\n');
+    await fs.writeFile(lintStagedConfigPath, JSON.stringify(lintStagedConfig, null, 2) + '\n');
     console.info(`✅ lint-staged config written to ${LINT_STAGED_CONFIG_FILENAME}`);
   } catch (err) {
     handleError('Error updating package.json scripts', err);
