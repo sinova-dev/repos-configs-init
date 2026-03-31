@@ -25,8 +25,8 @@
     "sinova-general-config-init": "./init.mjs",
     "sinova-prettier-init": "./prettier/init.mjs",
     "sinova-eslint-init": "./eslint/init.mjs",
-    "sinova-husky-init": "./husky/init.mjs",
-    "sinova-tsconfig-init": "./tsconfig/init.mjs"
+    "sinova-tsconfig-init": "./tsconfig/init.mjs",
+    "sinova-husky-init": "./husky/init.mjs"
   },
   "dependencies": {
     "@darraghor/eslint-plugin-nestjs-typed": "^7.1.21",

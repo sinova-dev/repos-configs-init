@@ -96,6 +96,11 @@ export async function setupHusky() {
 
     targetPackageJson.scripts = merge({}, targetPackageJson.scripts, huskyScripts);
 
+    if (targetPackageJson['husky']) {
+      delete targetPackageJson['husky'];
+      console.info('🗑️ Removed old "husky" key from package.json');
+    }
+
     if (targetPackageJson['lint-staged']) {
       delete targetPackageJson['lint-staged'];
       console.info('  🗑️  Removed old "lint-staged" key from package.json');
