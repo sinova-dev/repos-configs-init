@@ -1,5 +1,4 @@
 import fs from 'fs/promises';
-import { execSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import inquirer from 'inquirer';
@@ -9,6 +8,7 @@ import { hideBin } from 'yargs/helpers';
 import { runWhenMain } from '../helpers/run-when-main.mjs';
 import { appendCommentedOutContent } from '../helpers/comment-out-content.mjs';
 import { removeOtherConfigs } from '../helpers/remove-other-configs.mjs';
+import { installDevDependencies } from '../helpers/install-dev-dependencies.mjs';
 import { ORM, ORM_CHOICES, isOrmSupported } from './orm/orm-registry.mjs';
 import { ESLINT_CONFIG_FILENAMES } from './constants/config-filenames.mjs';
 
@@ -221,9 +221,7 @@ export async function setupEslint() {
   }
 
   try {
-    const installCmd = `pnpm add -D ${packageJson.name}`;
-    console.log(`📦 Running: ${installCmd}`);
-    execSync(installCmd, { stdio: 'inherit' });
+    installDevDependencies([packageJson.name]);
   } catch (err) {
     handleError('Failed to install config package', err);
   }

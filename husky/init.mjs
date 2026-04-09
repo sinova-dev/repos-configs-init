@@ -3,6 +3,7 @@ import { execSync } from 'child_process';
 import path from 'path';
 import merge from 'lodash.merge';
 import { runWhenMain } from '../helpers/run-when-main.mjs';
+import { installDevDependencies } from '../helpers/install-dev-dependencies.mjs';
 import { PRETTIER_CONFIG_FILENAMES } from '../prettier/constants/config-filenames.mjs';
 import { ESLINT_CONFIG_FILENAMES } from '../eslint/constants/config-filenames.mjs';
 import { LINT_STAGED_CONFIG_FILENAMES } from './constants/lint-staged-config-filenames.mjs';
@@ -60,9 +61,7 @@ export async function setupHusky() {
   console.log('\n🐕 Setting up Husky...');
 
   try {
-    const installCmd = `pnpm add -D ${requiredDependencies.join(' ')}`;
-    console.log(`📦 Running: ${installCmd}`);
-    execSync(installCmd, { stdio: 'inherit' });
+    installDevDependencies(requiredDependencies);
 
     console.log('🔧 Initializing Husky...');
     execSync('npx husky init', { stdio: 'inherit' });

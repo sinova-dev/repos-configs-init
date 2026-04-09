@@ -1,5 +1,4 @@
 import fs from 'fs/promises';
-import { execSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import merge from 'lodash.merge';
@@ -9,6 +8,7 @@ import { hideBin } from 'yargs/helpers';
 
 import { runWhenMain } from '../helpers/run-when-main.mjs';
 import { appendCommentedOutContent } from '../helpers/comment-out-content.mjs';
+import { installDevDependencies } from '../helpers/install-dev-dependencies.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -151,9 +151,7 @@ export async function setupTsconfig() {
   }
 
   try {
-    const installCmd = `pnpm add -D ${requiredDependencies.join(' ')}`;
-    console.log(`📦 Running: ${installCmd}`);
-    execSync(installCmd, { stdio: 'inherit' });
+    installDevDependencies(requiredDependencies);
   } catch (err) {
     handleError('Failed to install config package and TypeScript', err);
   }
