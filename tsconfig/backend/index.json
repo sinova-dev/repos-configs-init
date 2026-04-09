@@ -1,0 +1,9 @@
+{
+  "extends": "../core/base.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "types": ["node"],
+    "sourceMap": true
+  }
+}

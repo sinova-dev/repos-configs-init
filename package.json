@@ -4,7 +4,15 @@
   "description": "Sinova Development repos configs",
   "type": "module",
   "exports": {
-    "./prettier-config": "./prettier-config.js"
+    "./prettier-config": "./prettier/index.mjs",
+    "./tsconfig/*.json": "./tsconfig/*.json",
+    "./eslint-config/core": "./eslint/core/index.mjs",
+    "./eslint-config/frontend": "./eslint/frontend/index.mjs",
+    "./eslint-config/react": "./eslint/frontend/react.mjs",
+    "./eslint-config/nextjs": "./eslint/frontend/nextjs.mjs",
+    "./eslint-config/backend": "./eslint/backend/index.mjs",
+    "./eslint-config/nestjs": "./eslint/backend/nestjs.mjs",
+    "./eslint-config/orm-prisma": "./eslint/orm/orm-prisma.mjs"
   },
   "license": "MIT",
   "scripts": {
@@ -15,25 +23,52 @@
   },
   "bin": {
     "sinova-general-config-init": "./init.mjs",
-    "sinova-husky-init": "./husky-init.mjs",
-    "sinova-prettier-init": "./prettier-init.mjs"
+    "sinova-prettier-init": "./prettier/init.mjs",
+    "sinova-eslint-init": "./eslint/init.mjs",
+    "sinova-tsconfig-init": "./tsconfig/init.mjs",
+    "sinova-husky-init": "./husky/init.mjs"
   },
   "dependencies": {
+    "@darraghor/eslint-plugin-nestjs-typed": "^7.1.21",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint-community/eslint-plugin-eslint-comments": "^4.5.0",
+    "@eslint/js": "^9.35.0",
+    "@next/eslint-plugin-next": "^15.5.4",
+    "@v2nic/eslint-plugin-prisma": "^1.2.6",
+    "eslint-config-prettier": "^10.1.0",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-check-file": "^3.3.0",
+    "eslint-plugin-erasable-syntax-only": "^0.4.0",
+    "eslint-plugin-i18next": "^6.1.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsdoc": "^61.4.0",
+    "eslint-plugin-jsx-a11y": "^6.10.0",
+    "eslint-plugin-playwright": "^2.2.0",
+    "eslint-plugin-react": "^7.37.0",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "eslint-plugin-react-refresh": "^0.4.0",
+    "eslint-plugin-storybook": "^0.11.0",
+    "eslint-plugin-unicorn": "^62.0.0",
+    "globals": "^16.4.0",
     "inquirer": "^9.0.0",
-    "lodash.merge": "^4.6.2"
+    "yargs": "^18.0.0",
+    "lodash.merge": "^4.6.2",
+    "prettier-plugin-tailwindcss": ">=0.6.10",
+    "typescript-eslint": "^8.0.0"
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^10.0.1",
     "husky": "^9.1.7",
+    "lint-staged": "^15.5.0",
     "prettier": ">=3.0.0",
-    "prettier-plugin-tailwindcss": ">=0.6.10",
     "release-it": "^19.0.4"
   },
   "peerDependencies": {
+    "eslint": ">=9.0.0",
     "husky": ">=9.1.7",
     "lint-staged": ">=15.0.0",
     "prettier": ">=3.0.0",
-    "prettier-plugin-tailwindcss": ">=0.6.10"
+    "typescript": ">=5.0.0"
   },
   "publishConfig": {
     "access": "public"
